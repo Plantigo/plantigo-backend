@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=plantigo
+POSTGRES_USER=JuYtQKofudgLNDNkXnyCLRNzuacCwIFb
+POSTGRES_PASSWORD=0V1tZTUT2ita3FTUDSYGZ03vr7dtBq9pk0NuDYCCBR40jasE4w2mGPKpXUPO5lhU
