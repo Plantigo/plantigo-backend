@@ -17,11 +17,17 @@ repos:
     rev: 'v1.13.0'
     hooks:
       - id: mypy
-        exclude: "([a-zA-Z]*/(migrations)/(.)*|.*/settings.py)"
+        args:
+          - "--config-file=./auth/mypy.ini"
+          - "--explicit-package-bases"
+        exclude: "([a-zA-Z]*/(migrations)/(.)*)"
         additional_dependencies: [
             djangorestframework-stubs,
             django-stubs,
             djangogrpcframework,
             grpcio,
-            grpcio-tools
+            grpcio-tools,
+            django-environ,
+            users,
+            psycopg2-binary
         ]
