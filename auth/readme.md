@@ -6,7 +6,7 @@
 pip install -r requirements.txt
 ```
 
-2. Set the environment variables in the `.env` file in the root directory.
+2. Set the environment variables in the `.env` file in the root directory according to the `.env.example` file.
 
 
 3. Run the server
