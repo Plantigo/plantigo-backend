@@ -3,7 +3,6 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import mqtt_listener
 from core.settings import DEBUG, VERSION, CORS_ORIGINS
 from integrations.handlers import save_telemetry_data
 from integrations.listener import MQTTListener
@@ -12,6 +11,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 mqtt_listener = MQTTListener()
+
 
 def _init_app() -> FastAPI:
     return FastAPI(version=VERSION, debug=DEBUG)
@@ -25,7 +25,7 @@ def register_app():
     @app.on_event("startup")
     async def startup_event():
         await mqtt_listener.connect()
-        mqtt_listener.add_topic("sensors/+/data", save_telemetry_data)  # Example of topic subscription
+        register_listener()
 
     @app.on_event("shutdown")
     async def shutdown_event():
@@ -34,9 +34,8 @@ def register_app():
     return app
 
 
-
 def register_listener():
-    mqtt.subscribe('test/topic', save_telemetry_data)
+    mqtt_listener.add_topic("sensors/+/data", save_telemetry_data)  # Example of topic subscription
 
 
 def register_middleware(app: FastAPI):

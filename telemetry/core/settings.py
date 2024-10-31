@@ -13,3 +13,7 @@ MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
 MQTT_USERNAME = os.getenv("MQTT_USERNAME", "test")
 MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", "test")
 MQTT_CLIENT_IT = os.getenv("MQTT_CLIENT_ID","telemetry-api")
+
+LOG_LEVEL = os.getenv("LOG_LEVEL", "debug")
+APP_HOST = os.getenv("APP_HOST", "0.0.0.0")
+APP_PORT = int(os.getenv("APP_PORT", 8000))

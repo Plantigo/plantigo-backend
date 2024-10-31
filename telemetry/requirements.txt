@@ -1,4 +1,3 @@
-fastapi
-pymongo
+fastapi[standard]
 uvicorn
 gmqtt

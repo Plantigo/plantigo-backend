@@ -71,10 +71,13 @@ class MQTTListener(ListenerInterface):
 
     def add_topic(self, topic: str, callback: Callable[[str, str], None]):
         logger.info(f"Subscribing to topic: {topic}")
-        wrapped_callback = self.handle_message(topic, callback)
-        self.topic_callbacks[topic] = wrapped_callback
-        self.client.subscribe(topic)
-        logger.info(f"Successfully subscribed to topic: {topic}")
+        try:
+            wrapped_callback = self.handle_message(topic, callback)
+            self.topic_callbacks[topic] = wrapped_callback
+            self.client.subscribe(topic)
+            logger.info(f"Successfully subscribed to topic: {topic}")
+        except Exception as e:
+            logger.error(f"Failed to subscribe to topic {topic}: {e}")
 
     def on_connect(self, client, flags, rc, properties):
         logger.info("Successfully connected to MQTT broker.")
