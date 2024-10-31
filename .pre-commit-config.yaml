@@ -29,5 +29,6 @@ repos:
             grpcio-tools,
             django-environ,
             users,
-            psycopg2-binary
+            psycopg2-binary,
+            djangorestframework,
         ]
