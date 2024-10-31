@@ -12,7 +12,21 @@ services:
     volumes:
       - ./mosquitto:/etc/mosquitto
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-
+  telemetry:
+      build:
+        context: ./telemetry
+        dockerfile: Dockerfile
+      container_name: telemetry
+      ports:
+        - "8000:80"
+      networks:
+        - mqtt_network
+      depends_on:
+        - mosquitto
+      environment:
+        - MQTT_HOST=mosquitto
+        - MQTT_PORT=1883
+      restart: unless-stopped
 networks:
   mqtt_network:
     driver: bridge

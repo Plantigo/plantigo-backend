@@ -229,3 +229,5 @@ fabric.properties
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Python,Django,PyCharm+all,vsc
 
 passwd
+
+.idea
