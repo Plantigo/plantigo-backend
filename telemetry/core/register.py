@@ -14,11 +14,11 @@ mqtt_listener = MQTTListener()
 
 
 def _init_app() -> FastAPI:
-    return FastAPI(version=VERSION, debug=DEBUG, lifespan=lifespan)
+    return FastAPI(version=VERSION, debug=DEBUG, lifespan=_lifespan)
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def _lifespan(app: FastAPI):
     await mqtt_listener.connect()
     register_listener()
     yield
