@@ -49,7 +49,7 @@ class MQTTListener(ListenerInterface):
         def wrapper(actual_topic: str, payload: str):
             pattern = topic_pattern.replace("+", r"([^/]+)")
             wildcard_match = re.match(pattern, actual_topic)
-            details = wildcard_match.group(1) if wildcard_match and wildcard_match.groups() else None
+            args = wildcard_match.group(1) if wildcard_match and wildcard_match.groups() else None
             logger.debug(f"Processing message from topic {actual_topic} with details {details}")
 
             try:
@@ -62,8 +62,8 @@ class MQTTListener(ListenerInterface):
                     data = payload
 
                 callback_signature = inspect.signature(callback)
-                if "details" in callback_signature.parameters and details:
-                    callback(data, details)
+                if "imei" in callback_signature.parameters and "details" in callback_signature.parameters and args:
+                    callback(data, args)
                 else:
                     callback(data)
             except Exception as e:

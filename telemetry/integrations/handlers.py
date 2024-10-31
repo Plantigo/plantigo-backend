@@ -1,4 +1,4 @@
 
 
-def save_telemetry_data(payload: str, details: str):
-    print(payload, details)
+def save_telemetry_data(payload: str, imei: str):
+    print(payload, imei)
