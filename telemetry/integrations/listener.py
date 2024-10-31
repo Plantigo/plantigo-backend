@@ -6,7 +6,7 @@ from typing import Callable, Dict
 
 from gmqtt import Client as MQTTClient
 
-from core.settings import MQTT_HOST, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD
+from core.settings import MQTT_HOST, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, MQTT_CLIENT_IT
 from integrations.interfaces.listener import ListenerInterface
 
 logger = logging.getLogger(__name__)
@@ -14,11 +14,11 @@ logger.setLevel(logging.INFO)
 
 
 class MQTTListener(ListenerInterface):
-    def __init__(self, host: str | None = None,
+    def __init__(self, client_id: str | None = None, host: str | None = None,
                  port: int | None = None,
                  username: str | None = None,
                  password: str | None = None):
-        self.client = MQTTClient("telemetry-listener")
+        self.client = MQTTClient(client_id or MQTT_CLIENT_IT)
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect
         self.client.on_message = self.on_message
