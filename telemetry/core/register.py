@@ -1,9 +1,9 @@
 import logging
-
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
 from core.settings import DEBUG, VERSION, CORS_ORIGINS
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from integrations.handlers import save_telemetry_data
 from integrations.listener import MQTTListener
 
@@ -14,22 +14,21 @@ mqtt_listener = MQTTListener()
 
 
 def _init_app() -> FastAPI:
-    return FastAPI(version=VERSION, debug=DEBUG)
+    return FastAPI(version=VERSION, debug=DEBUG, lifespan=lifespan)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await mqtt_listener.connect()
+    register_listener()
+    yield
+    await mqtt_listener.disconnect()
 
 
 def register_app():
     app = _init_app()
     register_router(app)
     register_middleware(app)
-
-    @app.on_event("startup")
-    async def startup_event():
-        await mqtt_listener.connect()
-        register_listener()
-
-    @app.on_event("shutdown")
-    async def shutdown_event():
-        await mqtt_listener.disconnect()
 
     return app
 

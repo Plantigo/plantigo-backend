@@ -1,18 +1,14 @@
-import uvicorn
-import logging
-import sys
+
+
 from core.settings import DEBUG, APP_HOST, APP_PORT
 
-# Configure logging
-logging.basicConfig(
-    stream=sys.stdout,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
 
 
-def main():
-    logger.info("Starting application...")
+
+
+if __name__ == "__main__":
+    import uvicorn
+
 
     uvicorn.run(
         "app:app",
@@ -21,7 +17,3 @@ def main():
         log_level="debug",
         reload=DEBUG,
     )
-
-
-if __name__ == "__main__":
-    main()
