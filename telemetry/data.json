@@ -1,0 +1,22 @@
+{
+    "10-06-1C-41-D1-04": [
+        {
+            "mac_address": "10-06-1C-41-D1-04",
+            "sensor1": 28.0,
+            "sensor2": 66.0,
+            "sensor3": 27.0,
+            "sensor4": 62.0,
+            "timestamp": 1730036099.713538
+        }
+    ],
+    "E8-6B-EA-C3-02-08": [
+        {
+            "mac_address": "E8-6B-EA-C3-02-08",
+            "sensor1": 24.0,
+            "sensor2": 41.0,
+            "sensor3": 25.0,
+            "sensor4": 94.0,
+            "timestamp": 1730036099.782669
+        }
+    ]
+}
