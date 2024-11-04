@@ -1,11 +1,11 @@
-from typing import Optional
+from typing import Optional, Type
 
 from sqlalchemy import ScalarResult
-from devices.schemas.devices import DeviceCreate, DeviceUpdate
-from devices.schemas.token import TokenData
+from devices.devices.schemas import DeviceCreate, DeviceUpdate
+from devices.token.schemas import TokenData
 from sqlmodel import select, Session
 
-from models.devices import DBDevice
+from devices.devices.models import DBDevice
 
 
 def get_all_devices(current_user: TokenData, session: Session) -> ScalarResult[DBDevice]:
@@ -42,7 +42,7 @@ def create_device(device: DeviceCreate, session: Session) -> DBDevice:
     return db_device
 
 
-def update_device(device_id: int, device: DeviceUpdate, session: Session) -> Optional[DBDevice]:
+def update_device(device_id: int, device: DeviceUpdate, session: Session) -> DBDevice | None:
     """
     Update a device by its ID.
 
@@ -52,7 +52,7 @@ def update_device(device_id: int, device: DeviceUpdate, session: Session) -> Opt
         session (Session): The database session.
 
     Returns:
-        Optional[DBDevice]: The updated device.
+        Type[DBDevice] | None: The updated device.
     """
     db_device = session.get(DBDevice, device_id)
     if not db_device:

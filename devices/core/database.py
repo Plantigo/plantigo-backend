@@ -1,4 +1,3 @@
-import os
 from devices.core.settings import settings
 from sqlmodel import create_engine, Session
 

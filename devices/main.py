@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlmodel import SQLModel
 from devices.core.database import engine
-from devices.routers.devices import router as devices_router
+from devices.devices.routers import router as devices_router
 from dotenv import load_dotenv
 
 

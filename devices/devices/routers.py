@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
-from devices.schemas.devices import DeviceCreate, Device, DeviceUpdate
-from devices.services.devices import create_device, get_all_devices, update_device, delete_device
+from devices.devices.schemas import DeviceCreate, Device, DeviceUpdate
+from devices.devices.services import create_device, get_all_devices, update_device, delete_device
 from devices.core.database import get_session
 from devices.core.dependencies import get_current_user
-from devices.schemas.token import TokenData
+from devices.token.schemas import TokenData
 from sqlmodel import Session
 
 router = APIRouter(

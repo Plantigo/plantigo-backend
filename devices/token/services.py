@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from jose import jwt, JWTError
 from devices.core.settings import settings
 
-from devices.schemas.token import TokenData
+from devices.token.schemas import TokenData
 
 
 def verify_token(token: str) -> TokenData:

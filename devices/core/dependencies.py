@@ -1,7 +1,7 @@
 from devices.core.database import get_session
 from fastapi import Header, HTTPException, status
-from devices.services.token import verify_token
-from devices.schemas.token import TokenData
+from devices.token.services import verify_token
+from devices.token.schemas import TokenData
 
 
 def get_db():
