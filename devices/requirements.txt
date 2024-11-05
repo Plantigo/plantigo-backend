@@ -1,0 +1,10 @@
+fastapi[standard]
+sqlalchemy
+sqlmodel
+psycopg2-binary
+python-dotenv
+uvicorn
+pre_commit
+python-jose==3.3.0
+pydantic_settings
+alembic
