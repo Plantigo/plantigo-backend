@@ -24,18 +24,21 @@ def get_all_devices(current_user: TokenData, session: Session) -> ScalarResult[D
     return session.exec(statement)
 
 
-def create_device(device: DeviceCreate, session: Session) -> DBDevice:
+def create_device(device: DeviceCreate, current_user: TokenData, session: Session) -> DBDevice:
     """
     Create a new device in the database.
 
     Args:
         device (DeviceCreate): The device data to create.
+        current_user (TokenData): The current authenticated user.
         session (Session): The database session.
 
     Returns:
         DBDevice: The created device.
     """
-    db_device = DBDevice(**device.dict())
+    data = device.dict()
+    data["user_id"] = current_user.user_id
+    db_device = DBDevice(**data)
     session.add(db_device)
     session.commit()
     session.refresh(db_device)

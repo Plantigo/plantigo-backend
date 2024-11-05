@@ -29,18 +29,24 @@ def read_all(current_user: TokenData = Depends(get_current_user),
 
 
 @router.post("/")
-def create(device: DeviceCreate, db: Session = Depends(get_session)) -> Device:
+def create(
+        device: DeviceCreate,
+        current_user: TokenData = Depends(get_current_user),
+        db: Session = Depends(get_session)
+) -> Device:
     """
-    Create a new device.
+        Create a new device.
 
-    Args:
-        device (DeviceCreate): The device data to create.
-        db (Session): The database session.
+        Args:
+            device (DeviceCreate): The device data to create.
+            current_user (TokenData): The current authenticated user.
+            db (Session): The database session.
 
-    Returns:
-        Device: The created device.
-    """
-    response = create_device(device, db)
+        Returns:
+            Device: The created device.
+        """
+    response = create_device(device, current_user, db)
+    print(response)
     return Device(**response.dict())
 
 

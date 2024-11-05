@@ -1,12 +1,15 @@
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
+
 from pydantic import BaseModel
 
 
 class Device(BaseModel):
-    id: int
+    id: UUID
     name: str
     mac_address: str
+    user_id: UUID
     is_active: bool
     last_read: Optional[datetime]
 
