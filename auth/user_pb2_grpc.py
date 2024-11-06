@@ -4,7 +4,7 @@ import grpc
 import warnings
 
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
-import users_pb2 as users__pb2
+import user_pb2 as user__pb2
 
 GRPC_GENERATED_VERSION = '1.67.0'
 GRPC_VERSION = grpc.__version__
@@ -19,14 +19,14 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in users_pb2_grpc.py depends on'
+        + f' but the generated code in user_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
     )
 
 
-class UserControllerStub(object):
+class CustomUserControllerStub(object):
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -36,33 +36,33 @@ class UserControllerStub(object):
             channel: A grpc.Channel.
         """
         self.List = channel.unary_stream(
-                '/users.UserController/List',
-                request_serializer=users__pb2.UserListRequest.SerializeToString,
-                response_deserializer=users__pb2.User.FromString,
+                '/user.CustomUserController/List',
+                request_serializer=user__pb2.CustomUserListRequest.SerializeToString,
+                response_deserializer=user__pb2.CustomUser.FromString,
                 _registered_method=True)
         self.Create = channel.unary_unary(
-                '/users.UserController/Create',
-                request_serializer=users__pb2.User.SerializeToString,
-                response_deserializer=users__pb2.User.FromString,
+                '/user.CustomUserController/Create',
+                request_serializer=user__pb2.CustomUser.SerializeToString,
+                response_deserializer=user__pb2.CustomUser.FromString,
                 _registered_method=True)
         self.Retrieve = channel.unary_unary(
-                '/users.UserController/Retrieve',
-                request_serializer=users__pb2.UserRetrieveRequest.SerializeToString,
-                response_deserializer=users__pb2.User.FromString,
+                '/user.CustomUserController/Retrieve',
+                request_serializer=user__pb2.CustomUserRetrieveRequest.SerializeToString,
+                response_deserializer=user__pb2.CustomUser.FromString,
                 _registered_method=True)
         self.Update = channel.unary_unary(
-                '/users.UserController/Update',
-                request_serializer=users__pb2.User.SerializeToString,
-                response_deserializer=users__pb2.User.FromString,
+                '/user.CustomUserController/Update',
+                request_serializer=user__pb2.CustomUser.SerializeToString,
+                response_deserializer=user__pb2.CustomUser.FromString,
                 _registered_method=True)
         self.Destroy = channel.unary_unary(
-                '/users.UserController/Destroy',
-                request_serializer=users__pb2.User.SerializeToString,
+                '/user.CustomUserController/Destroy',
+                request_serializer=user__pb2.CustomUser.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
 
 
-class UserControllerServicer(object):
+class CustomUserControllerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def List(self, request, context):
@@ -96,42 +96,42 @@ class UserControllerServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_UserControllerServicer_to_server(servicer, server):
+def add_CustomUserControllerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'List': grpc.unary_stream_rpc_method_handler(
                     servicer.List,
-                    request_deserializer=users__pb2.UserListRequest.FromString,
-                    response_serializer=users__pb2.User.SerializeToString,
+                    request_deserializer=user__pb2.CustomUserListRequest.FromString,
+                    response_serializer=user__pb2.CustomUser.SerializeToString,
             ),
             'Create': grpc.unary_unary_rpc_method_handler(
                     servicer.Create,
-                    request_deserializer=users__pb2.User.FromString,
-                    response_serializer=users__pb2.User.SerializeToString,
+                    request_deserializer=user__pb2.CustomUser.FromString,
+                    response_serializer=user__pb2.CustomUser.SerializeToString,
             ),
             'Retrieve': grpc.unary_unary_rpc_method_handler(
                     servicer.Retrieve,
-                    request_deserializer=users__pb2.UserRetrieveRequest.FromString,
-                    response_serializer=users__pb2.User.SerializeToString,
+                    request_deserializer=user__pb2.CustomUserRetrieveRequest.FromString,
+                    response_serializer=user__pb2.CustomUser.SerializeToString,
             ),
             'Update': grpc.unary_unary_rpc_method_handler(
                     servicer.Update,
-                    request_deserializer=users__pb2.User.FromString,
-                    response_serializer=users__pb2.User.SerializeToString,
+                    request_deserializer=user__pb2.CustomUser.FromString,
+                    response_serializer=user__pb2.CustomUser.SerializeToString,
             ),
             'Destroy': grpc.unary_unary_rpc_method_handler(
                     servicer.Destroy,
-                    request_deserializer=users__pb2.User.FromString,
+                    request_deserializer=user__pb2.CustomUser.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'users.UserController', rpc_method_handlers)
+            'user.CustomUserController', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('users.UserController', rpc_method_handlers)
+    server.add_registered_method_handlers('user.CustomUserController', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
-class UserController(object):
+class CustomUserController(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
@@ -148,9 +148,9 @@ class UserController(object):
         return grpc.experimental.unary_stream(
             request,
             target,
-            '/users.UserController/List',
-            users__pb2.UserListRequest.SerializeToString,
-            users__pb2.User.FromString,
+            '/user.CustomUserController/List',
+            user__pb2.CustomUserListRequest.SerializeToString,
+            user__pb2.CustomUser.FromString,
             options,
             channel_credentials,
             insecure,
@@ -175,9 +175,9 @@ class UserController(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/users.UserController/Create',
-            users__pb2.User.SerializeToString,
-            users__pb2.User.FromString,
+            '/user.CustomUserController/Create',
+            user__pb2.CustomUser.SerializeToString,
+            user__pb2.CustomUser.FromString,
             options,
             channel_credentials,
             insecure,
@@ -202,9 +202,9 @@ class UserController(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/users.UserController/Retrieve',
-            users__pb2.UserRetrieveRequest.SerializeToString,
-            users__pb2.User.FromString,
+            '/user.CustomUserController/Retrieve',
+            user__pb2.CustomUserRetrieveRequest.SerializeToString,
+            user__pb2.CustomUser.FromString,
             options,
             channel_credentials,
             insecure,
@@ -229,9 +229,9 @@ class UserController(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/users.UserController/Update',
-            users__pb2.User.SerializeToString,
-            users__pb2.User.FromString,
+            '/user.CustomUserController/Update',
+            user__pb2.CustomUser.SerializeToString,
+            user__pb2.CustomUser.FromString,
             options,
             channel_credentials,
             insecure,
@@ -256,8 +256,8 @@ class UserController(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/users.UserController/Destroy',
-            users__pb2.User.SerializeToString,
+            '/user.CustomUserController/Destroy',
+            user__pb2.CustomUser.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
