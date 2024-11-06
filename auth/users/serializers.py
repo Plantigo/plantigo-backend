@@ -11,7 +11,7 @@ class UserProtoSerializer(proto_serializers.ModelProtoSerializer):
 
     class Meta:
         model = get_user_model()
-        proto_class = users_pb2.User
+        proto_class = users_pb2.CustomUser
         fields = ['id', 'username', 'email', 'groups']
 
 

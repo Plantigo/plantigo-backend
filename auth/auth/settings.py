@@ -37,7 +37,6 @@ ALLOWED_HOSTS: list = []
 
 # Application definition
 
-AUTH_USER_MODEL = 'users.CustomUser'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -51,6 +50,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'users',
 ]
+
+AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

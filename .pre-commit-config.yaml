@@ -1,5 +1,6 @@
 default_language_version:
   python: python3.12
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -15,35 +16,15 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.13.0'
+    rev: v1.13.0
     hooks:
-      - id: mypy
-        name: Run mypy for Users Django app
-        args:
-          - "--config-file=./auth/mypy.ini"
-          - "--explicit-package-bases"
-        files: ^auth/
-        exclude: "([a-zA-Z]*/(migrations)/(.)*)"
-        additional_dependencies: [
-            djangorestframework-stubs,
-            django-stubs,
-            djangogrpcframework,
-            grpcio,
-            grpcio-tools,
-            django-environ,
-            users,
-            psycopg2-binary,
-            djangorestframework,
-            djangorestframework-simplejwt
-        ]
       - id: mypy
         name: Run mypy for Devices FastAPI app
         args:
           - "--config-file=./devices/mypy.ini"
           - "--explicit-package-bases"
         files: ^devices/
-        additional_dependencies: [
-            fastapi,
-            sqlmodel,
-            typing-extensions
-        ]
+        additional_dependencies:
+          - fastapi
+          - sqlmodel
+          - typing-extensions

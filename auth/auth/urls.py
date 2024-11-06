@@ -14,4 +14,4 @@ urlpatterns = [
 
 
 def grpc_handlers(server):
-    users_pb2_grpc.add_UserControllerServicer_to_server(UserService.as_servicer(), server)
+    users_pb2_grpc.add_CustomUserControllerServicer_to_server(UserService.as_servicer(), server)

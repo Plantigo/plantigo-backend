@@ -25,19 +25,19 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0busers.proto\x12\x05users\x1a\x1bgoogle/protobuf/empty.proto\"C\n\x04User\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x0e\n\x06groups\x18\x04 \x03(\x05\"\x11\n\x0fUserListRequest\"!\n\x13UserRetrieveRequest\x12\n\n\x02id\x18\x01 \x01(\x05\x32\xf6\x01\n\x0eUserController\x12/\n\x04List\x12\x16.users.UserListRequest\x1a\x0b.users.User\"\x00\x30\x01\x12$\n\x06\x43reate\x12\x0b.users.User\x1a\x0b.users.User\"\x00\x12\x35\n\x08Retrieve\x12\x1a.users.UserRetrieveRequest\x1a\x0b.users.User\"\x00\x12$\n\x06Update\x12\x0b.users.User\x1a\x0b.users.User\"\x00\x12\x30\n\x07\x44\x65stroy\x12\x0b.users.User\x1a\x16.google.protobuf.Empty\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0busers.proto\x12\x05users\x1a\x1bgoogle/protobuf/empty.proto\"I\n\nCustomUser\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08username\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\x0e\n\x06groups\x18\x04 \x03(\x05\"\x17\n\x15\x43ustomUserListRequest\"\'\n\x19\x43ustomUserRetrieveRequest\x12\n\n\x02id\x18\x01 \x01(\t2\xb2\x02\n\x14\x43ustomUserController\x12;\n\x04List\x12\x1c.users.CustomUserListRequest\x1a\x11.users.CustomUser\"\x00\x30\x01\x12\x30\n\x06\x43reate\x12\x11.users.CustomUser\x1a\x11.users.CustomUser\"\x00\x12\x41\n\x08Retrieve\x12 .users.CustomUserRetrieveRequest\x1a\x11.users.CustomUser\"\x00\x12\x30\n\x06Update\x12\x11.users.CustomUser\x1a\x11.users.CustomUser\"\x00\x12\x36\n\x07\x44\x65stroy\x12\x11.users.CustomUser\x1a\x16.google.protobuf.Empty\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'users_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_USER']._serialized_start=51
-  _globals['_USER']._serialized_end=118
-  _globals['_USERLISTREQUEST']._serialized_start=120
-  _globals['_USERLISTREQUEST']._serialized_end=137
-  _globals['_USERRETRIEVEREQUEST']._serialized_start=139
-  _globals['_USERRETRIEVEREQUEST']._serialized_end=172
-  _globals['_USERCONTROLLER']._serialized_start=175
-  _globals['_USERCONTROLLER']._serialized_end=421
+  _globals['_CUSTOMUSER']._serialized_start=51
+  _globals['_CUSTOMUSER']._serialized_end=124
+  _globals['_CUSTOMUSERLISTREQUEST']._serialized_start=126
+  _globals['_CUSTOMUSERLISTREQUEST']._serialized_end=149
+  _globals['_CUSTOMUSERRETRIEVEREQUEST']._serialized_start=151
+  _globals['_CUSTOMUSERRETRIEVEREQUEST']._serialized_end=190
+  _globals['_CUSTOMUSERCONTROLLER']._serialized_start=193
+  _globals['_CUSTOMUSERCONTROLLER']._serialized_end=499
 # @@protoc_insertion_point(module_scope)
