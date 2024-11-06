@@ -4,12 +4,12 @@ from app.db.utils import generate_mongo_uri
 
 
 class Config:
-    MQTT_BROKER = os.getenv("MQTT_BROKER", "localhost")
+    MQTT_BROKER = os.getenv("MQTT_BROKER", "mosquitto")
     MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
     MQTT_USERNAME = os.getenv("MQTT_USERNAME", 'test')
     MQTT_PASSWORD = os.getenv("MQTT_PASSWORD", 'test')
     MQTT_TOPICS = os.getenv("MQTT_TOPICS", "sensors/+/data").split(",")
-    MONGODB_HOST = os.getenv("MONGO_HOST", "localhost")
+    MONGODB_HOST = os.getenv("MONGO_HOST", "mongo")
     MONGODB_PORT = int(os.getenv("MONGO_PORT", 27017))
     MONGODB_USER = os.getenv("MONGO_USER", "root")
     MONGODB_PASSWORD = os.getenv("MONGO_PASSWORD", "example")

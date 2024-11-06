@@ -33,20 +33,43 @@ services:
     restart: always
     ports:
       - 27017:27017
+    networks:
+      - mqtt_network
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+
+  iot_listener:
+    build:
+      context: iot_listener
+      dockerfile: Dockerfile
+    container_name: iot_listener
+    ports:
+      - "8002:80"
+    networks:
+      - mqtt_network
+    depends_on:
+      - mosquitto
+      - mongo
+      - mongo-express
+    environment:
+      - MQTT_HOST=mosquitto
+      - MONGODB_HOST=mongo
+    restart: unless-stopped
 
   mongo-express:
     image: mongo-express
     restart: always
     ports:
       - 8081:8081
+    networks:
+      - mqtt_network
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
       ME_CONFIG_BASICAUTH: false
+
 networks:
   mqtt_network:
     driver: bridge
