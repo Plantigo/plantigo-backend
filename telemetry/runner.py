@@ -1,9 +1,5 @@
 
-
 from core.settings import DEBUG, APP_HOST, APP_PORT
-
-
-
 
 
 if __name__ == "__main__":

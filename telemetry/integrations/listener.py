@@ -2,10 +2,8 @@ import inspect
 import json
 import logging
 import re
-from typing import Callable, Dict
-
+from typing import Callable, Dict, Any
 from gmqtt import Client as MQTTClient
-
 from core.settings import MQTT_HOST, MQTT_PORT, MQTT_USERNAME, MQTT_PASSWORD, MQTT_CLIENT_IT
 from integrations.interfaces.listener import ListenerInterface
 
@@ -45,12 +43,16 @@ class MQTTListener(ListenerInterface):
         await self.client.disconnect()
         logger.info("Disconnected from MQTT broker.")
 
-    def handle_message(self, topic_pattern: str, callback: Callable) -> Callable:
-        def wrapper(actual_topic: str, payload: str):
+    def handle_message(self, topic_pattern: str, callback: Callable, app: Any) -> Callable:
+        async def wrapper(actual_topic: str, payload: str):
             pattern = topic_pattern.replace("+", r"([^/]+)")
             wildcard_match = re.match(pattern, actual_topic)
             args = wildcard_match.group(1) if wildcard_match and wildcard_match.groups() else None
-            logger.debug(f"Processing message from topic {actual_topic} with details {details}")
+            kwargs = {
+                "topic": actual_topic,
+                "app": app
+            }
+            logger.debug(f"Processing message from topic {actual_topic} with details {args}")
 
             try:
                 if not payload.strip():
@@ -62,19 +64,27 @@ class MQTTListener(ListenerInterface):
                     data = payload
 
                 callback_signature = inspect.signature(callback)
-                if "imei" in callback_signature.parameters and "details" in callback_signature.parameters and args:
-                    callback(data, args)
+                params = {}
+                if "args" in callback_signature.parameters and args:
+                    params["args"] = args
+                if "kwargs" in callback_signature.parameters and kwargs:
+                    params["kwargs"] = kwargs
+
+                # Check if callback is async
+                if inspect.iscoroutinefunction(callback):
+                    await callback(data, **params)
                 else:
-                    callback(data)
+                    callback(data, **params)
+
             except Exception as e:
                 logger.error(f"Error processing message on topic {actual_topic}: {e}")
 
         return wrapper
 
-    def add_topic(self, topic: str, callback: Callable[[str, str], None]):
+    def add_topic(self, topic: str, callback: Callable[[Any, ...], None], app: Any | None = None):
         logger.info(f"Subscribing to topic: {topic}")
         try:
-            wrapped_callback = self.handle_message(topic, callback)
+            wrapped_callback = self.handle_message(topic, callback, app)
             self.topic_callbacks[topic] = wrapped_callback
             self.client.subscribe(topic)
             logger.info(f"Successfully subscribed to topic: {topic}")
@@ -93,7 +103,7 @@ class MQTTListener(ListenerInterface):
         else:
             logger.info("Disconnected from MQTT broker.")
 
-    def on_message(self, client, topic, payload, qos, properties):
+    async def on_message(self, client, topic, payload, qos, properties):
         logger.debug(f"Received message on topic {topic}: {payload.decode('utf-8')}")
         matched_callback = None
         for topic_pattern, callback in self.topic_callbacks.items():
@@ -104,7 +114,7 @@ class MQTTListener(ListenerInterface):
 
         if matched_callback:
             try:
-                matched_callback(topic, payload.decode("utf-8"))
+                await matched_callback(topic, payload.decode("utf-8"))
             except Exception as e:
                 logger.error(f"Error processing message on topic {topic}: {e}")
         else:
