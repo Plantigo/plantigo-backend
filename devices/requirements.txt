@@ -10,3 +10,6 @@ pydantic_settings
 alembic
 pydantic
 jose
+grpcio
+grpcio-tools
+grpc-interceptor
