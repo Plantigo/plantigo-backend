@@ -2,9 +2,9 @@ from uuid import UUID
 
 from fastapi import HTTPException, status
 from jose import jwt, JWTError
-from devices.core.settings import settings
+from core.settings import settings
 
-from devices.token.schemas import TokenData
+from auth_token.schemas import TokenData
 
 
 def verify_token(token: str) -> TokenData:

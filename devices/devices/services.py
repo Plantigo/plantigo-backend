@@ -1,11 +1,11 @@
 from typing import Optional, Type
 
 from sqlalchemy import ScalarResult
-from devices.devices.schemas import DeviceCreate, DeviceUpdate
-from devices.token.schemas import TokenData
+from devices.schemas import DeviceCreate, DeviceUpdate
+from auth_token.schemas import TokenData
 from sqlmodel import select, Session
 
-from devices.devices.models import DBDevice
+from devices.models import DBDevice
 
 
 def get_all_devices(current_user: TokenData, session: Session) -> ScalarResult[DBDevice]:
