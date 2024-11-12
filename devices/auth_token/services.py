@@ -10,7 +10,6 @@ from auth_token.schemas import TokenData
 def verify_token(token: str) -> TokenData:
     try:
         payload = jwt.decode(token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm])
-        print(payload)
         user_id: UUID = payload.get("user_id")
         if user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
