@@ -2,13 +2,15 @@ from concurrent import futures
 import grpc
 import logging
 
-from auth_token.interceptor import AuthInterceptor
 from devices.devices_pb2_grpc import add_DeviceServiceServicer_to_server
 from devices.grpc_service import DeviceGRPCService
+from plantigo_common.grpc.auth_interceptor import AuthInterceptor
+from core.settings import settings
 
 
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10), interceptors=[AuthInterceptor()])
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
+                         interceptors=[AuthInterceptor(settings.jwt_secret_key, settings.jwt_algorithm)])
     add_DeviceServiceServicer_to_server(DeviceGRPCService(), server)
     server.add_insecure_port("[::]:50051")
     server.start()
