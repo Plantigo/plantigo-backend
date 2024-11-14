@@ -9,6 +9,7 @@ from core.settings import settings
 
 
 def serve():
+    logger.info("Setting up gRPC server with interceptors...")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
                          interceptors=[AuthInterceptor(settings.jwt_secret_key, settings.jwt_algorithm)])
     add_DeviceServiceServicer_to_server(DeviceGRPCService(), server)

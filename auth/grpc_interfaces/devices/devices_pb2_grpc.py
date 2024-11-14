@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import devices.devices_pb2 as devices__pb2
+import grpc_interfaces.devices.devices_pb2 as devices__pb2
 
 GRPC_GENERATED_VERSION = '1.67.1'
 GRPC_VERSION = grpc.__version__
@@ -26,7 +26,8 @@ if _version_not_supported:
 
 
 class DeviceServiceStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """Definicja serwisu
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -42,7 +43,8 @@ class DeviceServiceStub(object):
 
 
 class DeviceServiceServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """Definicja serwisu
+    """
 
     def GetAllDevices(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -67,7 +69,8 @@ def add_DeviceServiceServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class DeviceService(object):
-    """Missing associated documentation comment in .proto file."""
+    """Definicja serwisu
+    """
 
     @staticmethod
     def GetAllDevices(request,

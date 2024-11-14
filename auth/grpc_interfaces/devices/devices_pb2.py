@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rdevices.proto\x12\x07\x64\x65vices\"\x13\n\x11GetDevicesRequest\"7\n\x06\x44\x65vice\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0bmac_address\x18\x03 \x01(\t\"6\n\x12GetDevicesResponse\x12 \n\x07\x64\x65vices\x18\x01 \x03(\x0b\x32\x0f.devices.Device2Y\n\rDeviceService\x12H\n\rGetAllDevices\x12\x1a.devices.GetDevicesRequest\x1a\x1b.devices.GetDevicesResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rdevices.proto\x12\x07\x64\x65vices\"$\n\x11GetDevicesRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"7\n\x06\x44\x65vice\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0bmac_address\x18\x03 \x01(\t\"6\n\x12GetDevicesResponse\x12 \n\x07\x64\x65vices\x18\x01 \x03(\x0b\x32\x0f.devices.Device2Y\n\rDeviceService\x12H\n\rGetAllDevices\x12\x1a.devices.GetDevicesRequest\x1a\x1b.devices.GetDevicesResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,11 +32,11 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'devices_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_GETDEVICESREQUEST']._serialized_start=26
-  _globals['_GETDEVICESREQUEST']._serialized_end=45
-  _globals['_DEVICE']._serialized_start=47
-  _globals['_DEVICE']._serialized_end=102
-  _globals['_GETDEVICESRESPONSE']._serialized_start=104
-  _globals['_GETDEVICESRESPONSE']._serialized_end=158
-  _globals['_DEVICESERVICE']._serialized_start=160
-  _globals['_DEVICESERVICE']._serialized_end=249
+  _globals['_GETDEVICESREQUEST']._serialized_end=62
+  _globals['_DEVICE']._serialized_start=64
+  _globals['_DEVICE']._serialized_end=119
+  _globals['_GETDEVICESRESPONSE']._serialized_start=121
+  _globals['_GETDEVICESRESPONSE']._serialized_end=175
+  _globals['_DEVICESERVICE']._serialized_start=177
+  _globals['_DEVICESERVICE']._serialized_end=266
 # @@protoc_insertion_point(module_scope)
