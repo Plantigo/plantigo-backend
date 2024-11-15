@@ -4,13 +4,11 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.settings import DEBUG, VERSION, CORS_ORIGINS
-from integrations.handlers import save_telemetry_data
-from integrations.listener import MQTTListener
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-mqtt_listener = MQTTListener()
 
 def _init_app() -> FastAPI:
     logger.info("Initializing FastAPI application.")
@@ -19,11 +17,9 @@ def _init_app() -> FastAPI:
 @asynccontextmanager
 async def _lifespan(app: FastAPI):
     await startup_db_client(app)
-    await mqtt_listener.connect()
     register_listener(app)
     yield
     await shutdown_db_client(app)
-    await mqtt_listener.disconnect()
 
 async def startup_db_client(app):
     try:
