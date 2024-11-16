@@ -15,7 +15,7 @@ message DeviceData {
 message Response {
     string status = 1;
     string message = 2;
-    string data = 3;
+    repeated DeviceData deviceData = 3;
 }
 
 message TimeRangeRequest {
@@ -35,6 +35,8 @@ message AverageResponse {
     string message = 2;
     float avg_temperature = 3;
     float avg_humidity = 4;
+    float avg_pressure = 5;
+    float avg_soil_moisture = 6;
 }
 
 message LastRecordRequest {
@@ -48,7 +50,6 @@ message LastRecordResponse {
 }
 
 service Dispatcher {
-    rpc SendDeviceData(DeviceData) returns (Response);
     rpc GetDataForPeriod(TimeRangeRequest) returns (Response);
     rpc GetAverageData(AverageRequest) returns (AverageResponse);
     rpc GetLastRecord(LastRecordRequest) returns (LastRecordResponse);

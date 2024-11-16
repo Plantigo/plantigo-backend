@@ -5,7 +5,7 @@ services:
       dockerfile: telemetry/Dockerfile
     container_name: telemetry
     ports:
-      - "8001:50501"
+      - "8001:50051"
     restart: unless-stopped
 
 
