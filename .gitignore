@@ -233,3 +233,6 @@ passwd
 .idea
 *_pb2.py
 *_pb2_grpc.py
+
+gateway/shared/
+gateway/generate_proto_files.sh
