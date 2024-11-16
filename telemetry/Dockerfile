@@ -1,16 +1,21 @@
-
-FROM python:3.12-alpine
-
+FROM python:3.12-slim
 
 WORKDIR /code
 
 ENV PYTHONUNBUFFERED=1
-COPY ./requirements.txt /code/requirements.txt
+ENV PYTHONPATH="/code:$PYTHONPATH"
 
-RUN pip install uv && uv pip install --system --no-cache -r requirements.txt
+COPY ./telemetry/requirements.txt /code/requirements.txt
 
+RUN pip install --no-cache -r requirements.txt
 
-COPY . /code/
+COPY ./telemetry /code/
 
+COPY ./shared /code/shared
 
-CMD ["python", "main.py"]
+COPY ./scripts/generate_proto_files.sh /code/generate_proto_files.sh
+
+RUN chmod +x /code/generate_proto_files.sh
+ENTRYPOINT ["/bin/sh", "/code/generate_proto_files.sh"]
+
+CMD ["python", "runner.py"]
