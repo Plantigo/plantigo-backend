@@ -6,7 +6,7 @@ from plantigo_common.grpc.auth_interceptor import AuthInterceptor
 from core.database import get_collection
 from core.logging import configure_logging
 from core.settings import settings
-from dispatcher.dispatcher_pb2_grpc import add_DispatcherServicer_to_server
+from shared.dispatcher_pb2_grpc import add_DispatcherServicer_to_server
 from dispatcher.service import DispatcherGRPCService
 
 
