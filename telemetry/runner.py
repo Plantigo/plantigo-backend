@@ -1,15 +1,16 @@
+import logging
+import sys
 
-from core.settings import DEBUG, APP_HOST, APP_PORT
-
+from core.logging import configure_logging
+from core.server import serve
+from core.settings import settings
 
 if __name__ == "__main__":
-    import uvicorn
+    logger = configure_logging()
 
-
-    uvicorn.run(
-        "app:app",
-        host=APP_HOST or "0.0.0.0",
-        port=APP_PORT or 8000,
-        log_level="debug",
-        reload=DEBUG,
-    )
+    try:
+        logger.info("Starting gRPC server...")
+        serve()
+    except Exception as e:
+        logger.critical(f"Failed to start the gRPC server: {e}", exc_info=True)
+        sys.exit(1)

@@ -13,4 +13,4 @@ RUN pip install uv && uv pip install --system --no-cache -r requirements.txt
 COPY . /code/
 
 
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["python", "main.py"]
