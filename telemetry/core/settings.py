@@ -11,6 +11,11 @@ class Settings(BaseSettings):
     app_port: int = 50051
     debug: bool = True
     model_config = SettingsConfigDict(env_file=".env")
+    iot_collection_name: str = "telemetry"
+    max_grpc_workers: int = 10
+    use_tls: bool = False
+    tls_cert_path: str = "server.crt"
+    tls_key_path: str = "server.key"
 
 
 settings = Settings()

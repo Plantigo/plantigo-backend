@@ -1,16 +1,16 @@
 import logging
+import sys
 
+from core.logging import configure_logging
 from core.server import serve
 from core.settings import settings
 
 if __name__ == "__main__":
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
+    logger = configure_logging()
 
-    handler = logging.StreamHandler()
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-
-    logger.info("Starting gRPC server on port {}:{}...".format(settings.app_host, settings.app_port))
-    serve()
+    try:
+        logger.info("Starting gRPC server...")
+        serve()
+    except Exception as e:
+        logger.critical(f"Failed to start the gRPC server: {e}", exc_info=True)
+        sys.exit(1)
