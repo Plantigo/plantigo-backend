@@ -2,11 +2,8 @@ from sqlmodel import select, Session
 from devices.devices_pb2_grpc import DeviceServiceServicer
 from devices.devices_pb2 import GetDevicesResponse  # noqa
 from devices.models import DBDevice
-from core.settings import settings
-from sqlmodel import create_engine
+from core.database import engine
 import logging
-
-engine = create_engine(settings.database_url, echo=True)
 
 logger = logging.getLogger(__name__)
 
