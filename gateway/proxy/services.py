@@ -1,8 +1,8 @@
 import grpc
 from rest_framework.request import Request
 
-from grpc_interfaces.devices import devices_pb2
-from grpc_interfaces.devices.devices_pb2_grpc import DeviceServiceStub
+from shared import devices_pb2
+from shared.devices_pb2_grpc import DeviceServiceStub
 
 
 def fetch_devices(request: Request) -> list[devices_pb2.Device]:
