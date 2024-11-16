@@ -13,4 +13,4 @@ jose
 grpcio
 grpcio-tools
 grpc-interceptor
-plantigo-common==1.0.2
+plantigo-common

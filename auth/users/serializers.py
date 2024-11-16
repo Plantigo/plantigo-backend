@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django_grpc_framework import proto_serializers
 from rest_framework import serializers
-import users_pb2
+from grpc_interfaces.users import users_pb2
 
 
 class UserProtoSerializer(proto_serializers.ModelProtoSerializer):

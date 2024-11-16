@@ -4,8 +4,11 @@ from devices.devices_pb2 import GetDevicesResponse  # noqa
 from devices.models import DBDevice
 from core.settings import settings
 from sqlmodel import create_engine
+import logging
 
 engine = create_engine(settings.database_url, echo=True)
+
+logger = logging.getLogger(__name__)
 
 
 class DeviceGRPCService(DeviceServiceServicer):
@@ -13,7 +16,8 @@ class DeviceGRPCService(DeviceServiceServicer):
         self.db_session = Session(engine)
 
     def GetAllDevices(self, request, context):
-        user_id = request.user_id
+        logger.info(f"Fetching devices for user_id: {context.user_id}")
+        user_id = context.user_id
 
         statement = select(DBDevice).where(DBDevice.user_id == user_id)
         devices = self.db_session.exec(statement)

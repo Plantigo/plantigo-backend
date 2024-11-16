@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import devices.devices_pb2 as devices__pb2
+import grpc_interfaces.devices.devices_pb2 as devices__pb2
 
 GRPC_GENERATED_VERSION = '1.67.1'
 GRPC_VERSION = grpc.__version__
@@ -54,7 +54,7 @@ class DeviceServiceServicer(object):
 def add_DeviceServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetAllDevices': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetAllDevices,
+                    servicer.Device,
                     request_deserializer=devices__pb2.GetDevicesRequest.FromString,
                     response_serializer=devices__pb2.GetDevicesResponse.SerializeToString,
             ),
