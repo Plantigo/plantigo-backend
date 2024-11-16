@@ -1,75 +1,41 @@
 services:
-  mosquitto:
-    image: eclipse-mosquitto
-    hostname: mosquitto
-    container_name: mosquitto
-    ports:
-      - "1883:1883"
-      - "9001:9001"
-    restart: unless-stopped
-    networks:
-      - mqtt_network
-    volumes:
-      - ./mosquitto:/etc/mosquitto
-      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+#  mosquitto:
+#    image: eclipse-mosquitto
+#    hostname: mosquitto
+#    container_name: mosquitto
+#    ports:
+#      - "1883:1883"
+#      - "9001:9001"
+#    restart: unless-stopped
+#    volumes:
+#      - ./mosquitto:/etc/mosquitto
+#      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
   telemetry:
     build:
-      context: ./telemetry
-      dockerfile: Dockerfile
+      context: .  # Zmień kontekst na katalog główny
+      dockerfile: telemetry/Dockerfile  # Wskaż Dockerfile w folderze telemetry
     container_name: telemetry
     ports:
-      - "8000:80"
-    networks:
-      - mqtt_network
-    depends_on:
-      - mosquitto
-    environment:
-      - MQTT_HOST=mosquitto
-      - MQTT_PORT=1883
+      - "8000:50501"
     restart: unless-stopped
 
-  mongo:
-    image: mongo
-    restart: always
-    ports:
-      - 27017:27017
-    networks:
-      - mqtt_network
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-
-  iot_listener:
-    build:
-      context: iot_listener
-      dockerfile: Dockerfile
-    container_name: iot_listener
-    ports:
-      - "8002:80"
-    networks:
-      - mqtt_network
-    depends_on:
-      - mosquitto
-      - mongo
-      - mongo-express
-    environment:
-      - MQTT_HOST=mosquitto
-      - MONGODB_HOST=mongo
-    restart: unless-stopped
-
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
-    networks:
-      - mqtt_network
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-      ME_CONFIG_BASICAUTH: false
-
-networks:
-  mqtt_network:
-    driver: bridge
+#  mongo:
+#    image: mongo
+#    restart: always
+#    ports:
+#      - 27017:27017
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: root
+#      MONGO_INITDB_ROOT_PASSWORD: example
+#
+#  mongo-express:
+#    image: mongo-express
+#    restart: always
+#    ports:
+#      - 8081:8081
+#    environment:
+#      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+#      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+#      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+#      ME_CONFIG_BASICAUTH: false
