@@ -1,12 +1,10 @@
 import logging
-from datetime import datetime
 
 import grpc
 from pymongo.collection import Collection
 
-from core.database import get_collection
-from dispatcher.dispatcher_pb2 import Response, AverageResponse, LastRecordResponse, DeviceData  # noqa
-from dispatcher.dispatcher_pb2_grpc import DispatcherServicer
+from shared.dispatcher_pb2 import Response, AverageResponse, LastRecordResponse, DeviceData  # noqa
+from shared.dispatcher_pb2_grpc import DispatcherServicer
 from dispatcher.utils import get_time_range
 
 logger = logging.getLogger(__name__)
