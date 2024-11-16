@@ -3,7 +3,6 @@ syntax = "proto3";
 package devices;
 
 message GetDevicesRequest {
-    string user_id = 1;
 }
 
 message Device {

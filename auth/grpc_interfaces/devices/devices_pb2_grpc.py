@@ -26,8 +26,7 @@ if _version_not_supported:
 
 
 class DeviceServiceStub(object):
-    """Definicja serwisu
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -43,8 +42,7 @@ class DeviceServiceStub(object):
 
 
 class DeviceServiceServicer(object):
-    """Definicja serwisu
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def GetAllDevices(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -56,7 +54,7 @@ class DeviceServiceServicer(object):
 def add_DeviceServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'GetAllDevices': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetAllDevices,
+                    servicer.Device,
                     request_deserializer=devices__pb2.GetDevicesRequest.FromString,
                     response_serializer=devices__pb2.GetDevicesResponse.SerializeToString,
             ),
@@ -69,8 +67,7 @@ def add_DeviceServiceServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class DeviceService(object):
-    """Definicja serwisu
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def GetAllDevices(request,
