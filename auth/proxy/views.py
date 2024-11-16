@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from proxy.services import fetch_devices
+from google.protobuf.json_format import MessageToDict
 
 
 @api_view()
@@ -22,11 +23,7 @@ def get_devices(request):
     """
     try:
         devices = fetch_devices(request)
-        device_list = [{
-            'id': data.id,
-            'name': data.name,
-            'mac_address': data.mac_address,
-        } for data in devices]
+        device_list = [MessageToDict(data) for data in devices]
         return Response({'devices': device_list})
     except Exception as e:
         return Response({'error': str(e)}, status=500)
