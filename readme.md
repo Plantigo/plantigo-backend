@@ -29,6 +29,14 @@ RUN chmod +x /code/generate_proto_files.sh
 ENTRYPOINT ["/bin/sh", "/code/generate_proto_files.sh"]
 ```
 
+### **Uruchomienie lokalnie**
+
+Utworz w serwise folder `shared` i wrzuc do niego pliki .proto. Wygeneruj pliki `*_pb2.py` oraz `*_pb2_grpc.py` za pomocą skryptu `generate_proto_files.sh`.
+
+Do `.gitignore` dodaj folder `shared`
+
+Do `.dockerignore` dodaj folder `shared`
+
 # Instalacja MQTT:
 
 Tworzymy plik passwd w którym umieszczamy login i hasło do brokera MQTT w formacie:
