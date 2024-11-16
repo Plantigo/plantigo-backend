@@ -1,4 +1,14 @@
 services:
+  telemetry:
+    build:
+      context: .
+      dockerfile: telemetry/Dockerfile
+    container_name: telemetry
+    ports:
+      - "8001:50501"
+    restart: unless-stopped
+
+
 #  mosquitto:
 #    image: eclipse-mosquitto
 #    hostname: mosquitto
@@ -11,14 +21,7 @@ services:
 #      - ./mosquitto:/etc/mosquitto
 #      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
 
-  telemetry:
-    build:
-      context: .  # Zmień kontekst na katalog główny
-      dockerfile: telemetry/Dockerfile  # Wskaż Dockerfile w folderze telemetry
-    container_name: telemetry
-    ports:
-      - "8000:50501"
-    restart: unless-stopped
+
 
 #  mongo:
 #    image: mongo
