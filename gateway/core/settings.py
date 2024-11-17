@@ -144,3 +144,5 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+
+DEVICES_SERVICE_URL = env('DEVICES_SERVICE_URL')
