@@ -10,3 +10,4 @@ django-environ==0.11.2
 psycopg2-binary==2.9.10
 djangorestframework-simplejwt==5.3.1
 pre_commit
+plantigo-common
