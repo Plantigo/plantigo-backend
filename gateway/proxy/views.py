@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from proxy.services import DevicesGRPCService
-from proxy.serializers import DeviceProtoSerializer
+from plantigo_common.django.proto_serializer import ProtoSerializer
 
 
 @api_view()
@@ -18,7 +18,7 @@ def get_devices(request):
     try:
         devices_service = DevicesGRPCService(request)
         response = devices_service.get_all_devices()
-        serializer = DeviceProtoSerializer(response.devices, many=True)
+        serializer = ProtoSerializer(response.devices, many=True)
         return Response({'devices': serializer.data}, status=200)
     except Exception as e:
         return Response({'error': 'Server error'}, status=500)
