@@ -9,6 +9,8 @@ message Device {
     string id = 1;
     string name = 2;
     string mac_address = 3;
+    bool is_active = 4;
+    string last_read = 5;
 }
 
 message GetDevicesResponse {
