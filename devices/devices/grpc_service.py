@@ -4,6 +4,7 @@ from devices.devices_pb2 import GetDevicesResponse  # noqa
 from devices.models import DBDevice
 from core.database import engine
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -22,11 +23,7 @@ class DeviceGRPCService(DeviceServiceServicer):
         response = GetDevicesResponse()
 
         for device in devices:
-            response.devices.add(
-                id=str(device.id),
-                name=device.name,
-                mac_address=device.mac_address
-            )
+            response.devices.add(**json.loads(device.model_dump_json(exclude={'user_id'})))
         return response
 
     def __del__(self):
