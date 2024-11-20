@@ -5,6 +5,11 @@ package devices;
 message GetDevicesRequest {
 }
 
+message CreateDeviceRequest {
+    string name = 1;
+    string mac_address = 2;
+}
+
 message Device {
     string id = 1;
     string name = 2;
@@ -17,6 +22,11 @@ message GetDevicesResponse {
     repeated Device devices = 1;
 }
 
+message CreateDeviceResponse {
+    Device device = 1;
+}
+
 service DeviceService {
     rpc GetAllDevices(GetDevicesRequest) returns (GetDevicesResponse);
+    rpc CreateDevice(CreateDeviceRequest) returns (CreateDeviceResponse);
 }

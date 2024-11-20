@@ -39,12 +39,23 @@ class DeviceServiceStub(object):
                 request_serializer=devices__pb2.GetDevicesRequest.SerializeToString,
                 response_deserializer=devices__pb2.GetDevicesResponse.FromString,
                 _registered_method=True)
+        self.CreateDevice = channel.unary_unary(
+                '/devices.DeviceService/CreateDevice',
+                request_serializer=devices__pb2.CreateDeviceRequest.SerializeToString,
+                response_deserializer=devices__pb2.CreateDeviceResponse.FromString,
+                _registered_method=True)
 
 
 class DeviceServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def GetAllDevices(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateDevice(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -57,6 +68,11 @@ def add_DeviceServiceServicer_to_server(servicer, server):
                     servicer.GetAllDevices,
                     request_deserializer=devices__pb2.GetDevicesRequest.FromString,
                     response_serializer=devices__pb2.GetDevicesResponse.SerializeToString,
+            ),
+            'CreateDevice': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateDevice,
+                    request_deserializer=devices__pb2.CreateDeviceRequest.FromString,
+                    response_serializer=devices__pb2.CreateDeviceResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -86,6 +102,33 @@ class DeviceService(object):
             '/devices.DeviceService/GetAllDevices',
             devices__pb2.GetDevicesRequest.SerializeToString,
             devices__pb2.GetDevicesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateDevice(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/devices.DeviceService/CreateDevice',
+            devices__pb2.CreateDeviceRequest.SerializeToString,
+            devices__pb2.CreateDeviceResponse.FromString,
             options,
             channel_credentials,
             insecure,

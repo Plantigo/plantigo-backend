@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rdevices.proto\x12\x07\x64\x65vices\"\x13\n\x11GetDevicesRequest\"]\n\x06\x44\x65vice\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0bmac_address\x18\x03 \x01(\t\x12\x11\n\tis_active\x18\x04 \x01(\x08\x12\x11\n\tlast_read\x18\x05 \x01(\t\"6\n\x12GetDevicesResponse\x12 \n\x07\x64\x65vices\x18\x01 \x03(\x0b\x32\x0f.devices.Device2Y\n\rDeviceService\x12H\n\rGetAllDevices\x12\x1a.devices.GetDevicesRequest\x1a\x1b.devices.GetDevicesResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rdevices.proto\x12\x07\x64\x65vices\"\x13\n\x11GetDevicesRequest\"8\n\x13\x43reateDeviceRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x13\n\x0bmac_address\x18\x02 \x01(\t\"]\n\x06\x44\x65vice\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0bmac_address\x18\x03 \x01(\t\x12\x11\n\tis_active\x18\x04 \x01(\x08\x12\x11\n\tlast_read\x18\x05 \x01(\t\"6\n\x12GetDevicesResponse\x12 \n\x07\x64\x65vices\x18\x01 \x03(\x0b\x32\x0f.devices.Device\"7\n\x14\x43reateDeviceResponse\x12\x1f\n\x06\x64\x65vice\x18\x01 \x01(\x0b\x32\x0f.devices.Device2\xa6\x01\n\rDeviceService\x12H\n\rGetAllDevices\x12\x1a.devices.GetDevicesRequest\x1a\x1b.devices.GetDevicesResponse\x12K\n\x0c\x43reateDevice\x12\x1c.devices.CreateDeviceRequest\x1a\x1d.devices.CreateDeviceResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,10 +33,14 @@ if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_GETDEVICESREQUEST']._serialized_start=26
   _globals['_GETDEVICESREQUEST']._serialized_end=45
-  _globals['_DEVICE']._serialized_start=47
-  _globals['_DEVICE']._serialized_end=140
-  _globals['_GETDEVICESRESPONSE']._serialized_start=142
-  _globals['_GETDEVICESRESPONSE']._serialized_end=196
-  _globals['_DEVICESERVICE']._serialized_start=198
-  _globals['_DEVICESERVICE']._serialized_end=287
+  _globals['_CREATEDEVICEREQUEST']._serialized_start=47
+  _globals['_CREATEDEVICEREQUEST']._serialized_end=103
+  _globals['_DEVICE']._serialized_start=105
+  _globals['_DEVICE']._serialized_end=198
+  _globals['_GETDEVICESRESPONSE']._serialized_start=200
+  _globals['_GETDEVICESRESPONSE']._serialized_end=254
+  _globals['_CREATEDEVICERESPONSE']._serialized_start=256
+  _globals['_CREATEDEVICERESPONSE']._serialized_end=311
+  _globals['_DEVICESERVICE']._serialized_start=314
+  _globals['_DEVICESERVICE']._serialized_end=480
 # @@protoc_insertion_point(module_scope)
