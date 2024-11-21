@@ -18,8 +18,8 @@ def get_devices(request):
     try:
         devices_service = DevicesGRPCService(request)
         response = devices_service.get_all_devices()
-        serializer = ProtoSerializer(response.devices, many=True)
-        return Response({'devices': serializer.data}, status=200)
+        devices = ProtoSerializer(response.devices)
+        return Response({'devices': devices.data}, status=200)
     except Exception as e:
         return Response({'error': 'Server error'}, status=500)
 
@@ -30,15 +30,24 @@ def create_device(request):
     Creates a new device using the gRPC service.
 
     Args:
-        request: The HTTP request object.
+        request: The HTTP request object containing the device data. Required body args: `name` and `mac_address`.
 
     Returns:
         Response: A DRF Response object containing the serialized device or an error message.
     """
     try:
+        name = request.data.get('name')
+        mac_address = request.data.get('mac_address')
+
+        if not name or not mac_address:
+            return Response({'error': 'name and mac_address are required'}, status=400)
+
         devices_service = DevicesGRPCService(request)
-        response = devices_service.create_device(request.data)
-        serializer = DeviceProtoSerializer(response.device)
-        return Response({'device': serializer.data}, status=200)
+        response = devices_service.create_device(
+            name=name,
+            mac_address=mac_address,
+        )
+        device = ProtoSerializer(response.device)
+        return Response({'device': device.data}, status=200)
     except Exception as e:
         return Response({'error': 'Server error'}, status=500)

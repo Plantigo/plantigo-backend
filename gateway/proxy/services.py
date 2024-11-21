@@ -10,6 +10,7 @@ grpc_config = {
         "address": settings.DEVICES_SERVICE_URL,
         "request_classes": {
             "GetAllDevices": devices_pb2.GetDevicesRequest,
+            "CreateDevice": devices_pb2.CreateDeviceRequest,
         },
     },
 }
