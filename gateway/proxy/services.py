@@ -11,6 +11,8 @@ grpc_config = {
         "request_classes": {
             "GetAllDevices": devices_pb2.GetDevicesRequest,
             "CreateDevice": devices_pb2.CreateDeviceRequest,
+            "UpdateDevice": devices_pb2.UpdateDeviceRequest,
+            "DeleteDevice": devices_pb2.DeleteDeviceRequest,
         },
     },
 }

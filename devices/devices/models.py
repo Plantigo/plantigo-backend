@@ -13,3 +13,5 @@ class DBDevice(SQLModel, table=True):
     user_id: UUID
     is_active: bool = True
     last_read: Optional[datetime] = Field(default=None)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
