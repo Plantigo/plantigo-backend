@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rdevices.proto\x12\x07\x64\x65vices\"\x13\n\x11GetDevicesRequest\"8\n\x13\x43reateDeviceRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x13\n\x0bmac_address\x18\x02 \x01(\t\"]\n\x06\x44\x65vice\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0bmac_address\x18\x03 \x01(\t\x12\x11\n\tis_active\x18\x04 \x01(\x08\x12\x11\n\tlast_read\x18\x05 \x01(\t\"6\n\x12GetDevicesResponse\x12 \n\x07\x64\x65vices\x18\x01 \x03(\x0b\x32\x0f.devices.Device\"7\n\x14\x43reateDeviceResponse\x12\x1f\n\x06\x64\x65vice\x18\x01 \x01(\x0b\x32\x0f.devices.Device2\xa6\x01\n\rDeviceService\x12H\n\rGetAllDevices\x12\x1a.devices.GetDevicesRequest\x1a\x1b.devices.GetDevicesResponse\x12K\n\x0c\x43reateDevice\x12\x1c.devices.CreateDeviceRequest\x1a\x1d.devices.CreateDeviceResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rdevices.proto\x12\x07\x64\x65vices\"\x13\n\x11GetDevicesRequest\"8\n\x13\x43reateDeviceRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x13\n\x0bmac_address\x18\x02 \x01(\t\"D\n\x13UpdateDeviceRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0bmac_address\x18\x03 \x01(\t\"!\n\x13\x44\x65leteDeviceRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x85\x01\n\x06\x44\x65vice\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x13\n\x0bmac_address\x18\x03 \x01(\t\x12\x11\n\tis_active\x18\x04 \x01(\x08\x12\x11\n\tlast_read\x18\x05 \x01(\t\x12\x12\n\ncreated_at\x18\x06 \x01(\t\x12\x12\n\nupdated_at\x18\x07 \x01(\t\"6\n\x12GetDevicesResponse\x12 \n\x07\x64\x65vices\x18\x01 \x03(\x0b\x32\x0f.devices.Device\"7\n\x14\x43reateDeviceResponse\x12\x1f\n\x06\x64\x65vice\x18\x01 \x01(\x0b\x32\x0f.devices.Device\"7\n\x14UpdateDeviceResponse\x12\x1f\n\x06\x64\x65vice\x18\x01 \x01(\x0b\x32\x0f.devices.Device\"\'\n\x14\x44\x65leteDeviceResponse\x12\x0f\n\x07message\x18\x01 \x01(\t2\xc0\x02\n\rDeviceService\x12H\n\rGetAllDevices\x12\x1a.devices.GetDevicesRequest\x1a\x1b.devices.GetDevicesResponse\x12K\n\x0c\x43reateDevice\x12\x1c.devices.CreateDeviceRequest\x1a\x1d.devices.CreateDeviceResponse\x12K\n\x0cUpdateDevice\x12\x1c.devices.UpdateDeviceRequest\x1a\x1d.devices.UpdateDeviceResponse\x12K\n\x0c\x44\x65leteDevice\x12\x1c.devices.DeleteDeviceRequest\x1a\x1d.devices.DeleteDeviceResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,12 +35,20 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_GETDEVICESREQUEST']._serialized_end=45
   _globals['_CREATEDEVICEREQUEST']._serialized_start=47
   _globals['_CREATEDEVICEREQUEST']._serialized_end=103
-  _globals['_DEVICE']._serialized_start=105
-  _globals['_DEVICE']._serialized_end=198
-  _globals['_GETDEVICESRESPONSE']._serialized_start=200
-  _globals['_GETDEVICESRESPONSE']._serialized_end=254
-  _globals['_CREATEDEVICERESPONSE']._serialized_start=256
-  _globals['_CREATEDEVICERESPONSE']._serialized_end=311
-  _globals['_DEVICESERVICE']._serialized_start=314
-  _globals['_DEVICESERVICE']._serialized_end=480
+  _globals['_UPDATEDEVICEREQUEST']._serialized_start=105
+  _globals['_UPDATEDEVICEREQUEST']._serialized_end=173
+  _globals['_DELETEDEVICEREQUEST']._serialized_start=175
+  _globals['_DELETEDEVICEREQUEST']._serialized_end=208
+  _globals['_DEVICE']._serialized_start=211
+  _globals['_DEVICE']._serialized_end=344
+  _globals['_GETDEVICESRESPONSE']._serialized_start=346
+  _globals['_GETDEVICESRESPONSE']._serialized_end=400
+  _globals['_CREATEDEVICERESPONSE']._serialized_start=402
+  _globals['_CREATEDEVICERESPONSE']._serialized_end=457
+  _globals['_UPDATEDEVICERESPONSE']._serialized_start=459
+  _globals['_UPDATEDEVICERESPONSE']._serialized_end=514
+  _globals['_DELETEDEVICERESPONSE']._serialized_start=516
+  _globals['_DELETEDEVICERESPONSE']._serialized_end=555
+  _globals['_DEVICESERVICE']._serialized_start=558
+  _globals['_DEVICESERVICE']._serialized_end=878
 # @@protoc_insertion_point(module_scope)
