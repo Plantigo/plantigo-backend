@@ -1,8 +1,64 @@
 import grpc
+from plantigo_common.django.proto_serializer import ProtoSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from proxy.services import DevicesGRPCService
-from plantigo_common.django.proto_serializer import ProtoSerializer
+
+from proxy.services import DevicesGRPCService, TelemetryGRPCService
+
+
+@api_view(['GET'])
+def get_data_for_period(request,mac_address):
+    try:
+        start_time = request.data.get('start_time')
+        end_time = request.data.get('end_time')
+
+        dispatcher_service = TelemetryGRPCService(request)
+        response = dispatcher_service.get_data_for_period(
+            mac_address=mac_address, start_time=start_time, end_time=end_time
+        )
+        telemetry = ProtoSerializer(response.deviceData)
+        return Response({'telemetry': telemetry.data}, status=200)
+    except grpc.RpcError as e:
+        return Response({'error': e.details()}, status=500)
+    except Exception as e:
+        return Response({'error': 'Server error'}, status=500)
+
+
+@api_view(['GET'])
+def get_average_data(request, mac_address):
+    try:
+        start_time = request.data.get('start_time')
+        end_time = request.data.get('end_time')
+
+        dispatcher_service = TelemetryGRPCService(request)
+        response = dispatcher_service.get_average_data(
+            mac_address=mac_address, start_time=start_time, end_time=end_time
+        )
+        avg_temperature = ProtoSerializer(response.avg_temperature)
+        avg_humidity = ProtoSerializer(response.avg_humidity)
+        avg_pressure = ProtoSerializer(response.avg_pressure)
+        avg_soil_moisture = ProtoSerializer(response.avg_soil_moisture)
+        return Response(
+            {'temperature': avg_temperature.data, "humidity": avg_humidity.data, "pressure": avg_pressure.data,
+             "soil_moisture": avg_soil_moisture.data}, status=200)
+    except grpc.RpcError as e:
+        return Response({'error': e.details()}, status=500)
+    except Exception as e:
+        return Response({'error': 'Server error'}, status=500)
+
+
+@api_view(['GET'])
+def get_last_record(request, mac_address):
+    try:
+        dispatcher_service = TelemetryGRPCService(request)
+        response = dispatcher_service.get_last_record(
+            mac_address=mac_address)
+        telemetry = ProtoSerializer(response.last_record)
+        return Response({'telemetry': telemetry.data}, status=200)
+    except grpc.RpcError as e:
+        return Response({'error': e.details()}, status=500)
+    except Exception as e:
+        return Response({'error': 'Server error'}, status=500)
 
 
 @api_view(['GET'])
