@@ -1,4 +1,30 @@
 services:
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    container_name: gateway
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    depends_on:
+      - devices
+    networks:
+      - plantigo_network
+
+  devices:
+    build:
+      context: .
+      dockerfile: devices/Dockerfile
+    container_name: devices
+    ports:
+      - "8002:50051"
+    restart: unless-stopped
+    env_file:
+      - devices/.env
+    networks:
+      - plantigo_network
+
   telemetry:
     build:
       context: .
@@ -7,38 +33,11 @@ services:
     ports:
       - "8001:50051"
     restart: unless-stopped
+    env_file:
+      - telemetry/.env
+    networks:
+      - plantigo_network
 
-
-#  mosquitto:
-#    image: eclipse-mosquitto
-#    hostname: mosquitto
-#    container_name: mosquitto
-#    ports:
-#      - "1883:1883"
-#      - "9001:9001"
-#    restart: unless-stopped
-#    volumes:
-#      - ./mosquitto:/etc/mosquitto
-#      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-
-
-
-#  mongo:
-#    image: mongo
-#    restart: always
-#    ports:
-#      - 27017:27017
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: root
-#      MONGO_INITDB_ROOT_PASSWORD: example
-#
-#  mongo-express:
-#    image: mongo-express
-#    restart: always
-#    ports:
-#      - 8081:8081
-#    environment:
-#      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-#      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-#      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
-#      ME_CONFIG_BASICAUTH: false
+networks:
+  plantigo_network:
+    driver: bridge
