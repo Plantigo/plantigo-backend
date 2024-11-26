@@ -20,9 +20,9 @@ grpc_config = {
         "stub": DispatcherStub,
         "address": settings.TELEMETRY_SERVICE_URL,
         "request_classes": {
-            "GetDataForPeriod": dispatcher_pb2.GetDataForPeriod,
-            "GetAverageData": dispatcher_pb2.GetAverageData,
-            "GetLastRecord": dispatcher_pb2.GetLastRecord
+            "GetDataForPeriod": dispatcher_pb2.TimeRangeRequest,
+            "GetAverageData": dispatcher_pb2.AverageRequest,
+            "GetLastRecord": dispatcher_pb2.LastRecordRequest
         }
     }
 
