@@ -29,7 +29,7 @@ SECRET_KEY = env('JWT_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS: list = []
+ALLOWED_HOSTS: list = env('ALLOWED_HOSTS').split(',')
 
 # Application definition
 
@@ -142,7 +142,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
 }
 
 DEVICES_SERVICE_URL = env('DEVICES_SERVICE_URL')
