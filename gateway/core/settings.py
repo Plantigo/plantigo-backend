@@ -29,7 +29,7 @@ SECRET_KEY = env('JWT_SECRET')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS: list = []
+ALLOWED_HOSTS: list = env('ALLOWED_HOSTS').split(',')
 
 # Application definition
 
