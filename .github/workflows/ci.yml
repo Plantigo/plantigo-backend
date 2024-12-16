@@ -1,4 +1,4 @@
-name: Deploy Plantigo Frontend
+name: Deploy Plantigo Backend
 
 on:
   push:
