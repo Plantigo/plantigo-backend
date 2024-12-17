@@ -69,6 +69,11 @@ REST_FRAMEWORK = {
 
 ROOT_URLCONF = 'core.urls'
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://api.plantigo.online',
+    'https://*.plantigo.online',
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
