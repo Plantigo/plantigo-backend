@@ -59,7 +59,7 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /plantigo-backend-path
+            cd /plantigo/plantigo-backend
 
             docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:rollback || true
             docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:rollback || true
