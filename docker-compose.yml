@@ -1,8 +1,6 @@
 services:
   gateway:
-    build:
-      context: .
-      dockerfile: gateway/Dockerfile
+    image: kwiatuh/plantigo-gateway:latest
     container_name: gateway
     ports:
       - "8000:8000"
@@ -15,9 +13,7 @@ services:
       - plantigo_network
 
   devices:
-    build:
-      context: .
-      dockerfile: devices/Dockerfile
+    image: kwiatuh/plantigo-devices:latest
     container_name: devices
     ports:
       - "8002:50051"
@@ -28,9 +24,7 @@ services:
       - plantigo_network
 
   telemetry:
-    build:
-      context: .
-      dockerfile: telemetry/Dockerfile
+    image: kwiatuh/plantigo-telemetry:latest
     container_name: telemetry
     ports:
       - "8001:50051"

@@ -1,0 +1,74 @@
+name: Deploy Plantigo Backend
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push gateway Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./gateway/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:${{ github.sha }}
+
+      - name: Build and push devices Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./devices/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:${{ github.sha }}
+
+      - name: Build and push telemetry Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./telemetry/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:${{ github.sha }}
+
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /root/plantigo/plantigo-backend
+
+            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:rollback || true
+            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:rollback || true
+            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:rollback || true
+
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest
+
+            
+            docker compose -f docker-compose.yml down
+            docker compose -f docker-compose.yml up -d
