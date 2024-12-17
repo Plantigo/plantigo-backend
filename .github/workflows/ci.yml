@@ -69,5 +69,5 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest
 
-            docker-compose -f docker-compose.yml down
-            docker-compose -f docker-compose.yml up -d
+            docker compose -f docker-compose.yml down
+            docker compose -f docker-compose.yml up -d
