@@ -69,10 +69,7 @@ REST_FRAMEWORK = {
 
 ROOT_URLCONF = 'core.urls'
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://api.plantigo.online',
-    'https://*.plantigo.online',
-]
+CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS').split(',')
 
 TEMPLATES = [
     {
