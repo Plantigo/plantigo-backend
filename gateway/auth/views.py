@@ -27,8 +27,16 @@ class UserViewSet(viewsets.ModelViewSet):
         Retrieve info about the current authenticated user based on user_id from JWT token.
         """
         user = request.user
+        if user.first_login:
+            user.first_login = False
+            user.save()
+            first_login = True
+        else:
+            first_login = False
         serializer = UserSerializer(user)
-        return Response(serializer.data)
+        response_data = serializer.data
+        response_data['first_login'] = first_login
+        return Response(response_data)
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
