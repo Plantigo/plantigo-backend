@@ -32,9 +32,21 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
+    AUTH_TYPE_CHOICES = [
+        ('custom', 'Custom'),
+        ('google', 'Google'),
+        ('apple', 'Apple'),
+    ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     first_login = models.BooleanField(default=True)
+    metadata = models.JSONField(default=dict, blank=True)
+    auth_type = models.CharField(
+        max_length=10,
+        choices=AUTH_TYPE_CHOICES,
+        default='custom',
+        help_text='Specifies the authentication method for the user.',
+    )
     username = None
 
     USERNAME_FIELD = 'email'

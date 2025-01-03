@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.decorators import action
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import UserSerializer, RegistrationSerializer
+import requests
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -30,13 +31,57 @@ class UserViewSet(viewsets.ModelViewSet):
         if user.first_login:
             user.first_login = False
             user.save()
-            first_login = True
-        else:
-            first_login = False
         serializer = UserSerializer(user)
-        response_data = serializer.data
-        response_data['first_login'] = first_login
-        return Response(response_data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[AllowAny],
+        authentication_classes=[],
+        url_path='google-userinfo',
+    )
+    def google_userinfo(self, request):
+        """
+        Handle Google user authentication and creation/update.
+        """
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return Response({"error": "Authorization header missing or invalid."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = auth_header.split(' ')[1]
+        try:
+            google_response = requests.get(
+                'https://www.googleapis.com/oauth2/v2/userinfo',
+                headers={'Authorization': f'Bearer {token}'}
+            )
+            if google_response.status_code != 200:
+                return Response({"error": "Invalid Google token."}, status=status.HTTP_403_FORBIDDEN)
+
+            user_data = google_response.json()
+            email = user_data.get('email')
+            if not email:
+                return Response({"error": "Email not available in Google response."},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+            user, created = get_user_model().objects.get_or_create(email=email, defaults={
+                'metadata': {'google_id': user_data.get('id')},
+                'first_name': user_data.get('given_name'),
+                'last_name': user_data.get('family_name'),
+                'auth_type': 'google',
+                'first_login': True,
+            })
+            if not created:
+                if user.first_login:
+                    user.first_login = False
+                    user.save()
+
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": "Failed to authenticate with Google."},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
