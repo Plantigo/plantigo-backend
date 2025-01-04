@@ -28,11 +28,14 @@ class UserViewSet(viewsets.ModelViewSet):
         Retrieve info about the current authenticated user based on user_id from JWT token.
         """
         user = request.user
+        original_first_login = user.first_login
         if user.first_login:
             user.first_login = False
             user.save()
         serializer = UserSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        response_data = serializer.data
+        response_data['first_login'] = original_first_login
+        return Response(response_data, status=status.HTTP_200_OK)
 
     @action(
         detail=False,
@@ -71,13 +74,16 @@ class UserViewSet(viewsets.ModelViewSet):
                 'auth_type': 'google',
                 'first_login': True,
             })
+            original_first_login = user.first_login
             if not created:
                 if user.first_login:
                     user.first_login = False
                     user.save()
 
             serializer = UserSerializer(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            response_data = serializer.data
+            response_data['first_login'] = original_first_login
+            return Response(response_data, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"error": "Failed to authenticate with Google."},
