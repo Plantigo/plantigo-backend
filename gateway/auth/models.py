@@ -39,6 +39,8 @@ class CustomUser(AbstractUser):
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
+    full_name = models.CharField(max_length=255, blank=True)
+    picture = models.URLField(blank=True)
     first_login = models.BooleanField(default=True)
     metadata = models.JSONField(default=dict, blank=True)
     auth_type = models.CharField(
@@ -47,7 +49,10 @@ class CustomUser(AbstractUser):
         default='custom',
         help_text='Specifies the authentication method for the user.',
     )
+
     username = None
+    first_name = None
+    last_name = None
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

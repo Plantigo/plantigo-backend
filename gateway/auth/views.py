@@ -69,8 +69,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
             user, created = get_user_model().objects.get_or_create(email=email, defaults={
                 'metadata': {'google_id': user_data.get('id')},
-                'first_name': user_data.get('given_name'),
-                'last_name': user_data.get('family_name'),
+                'full_name': user_data.get('name'),
+                'picture': user_data.get('picture'),
                 'auth_type': 'google',
                 'first_login': True,
             })
