@@ -31,26 +31,26 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:${{ github.sha }}
 
-      - name: Build and push devices Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./devices/Dockerfile
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:${{ github.sha }}
-
-      - name: Build and push telemetry Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./telemetry/Dockerfile
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:${{ github.sha }}
-
+#      - name: Build and push devices Docker image
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          file: ./devices/Dockerfile
+#          push: true
+#          tags: |
+#            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest
+#            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:${{ github.sha }}
+#
+#      - name: Build and push telemetry Docker image
+#        uses: docker/build-push-action@v5
+#        with:
+#          context: .
+#          file: ./telemetry/Dockerfile
+#          push: true
+#          tags: |
+#            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest
+#            ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:${{ github.sha }}
+#
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
@@ -62,12 +62,12 @@ jobs:
             cd /root/plantigo/plantigo-backend
 
             docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:rollback || true
-            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:rollback || true
-            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:rollback || true
+#            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:rollback || true
+#            docker tag ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:rollback || true
 
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-gateway:latest
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest
+#            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-devices:latest
+#            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/plantigo-telemetry:latest
 
             
             docker compose -f docker-compose.yml down
