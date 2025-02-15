@@ -16,5 +16,5 @@ django-extensions
 requests
 redis==5.0.1
 celery==5.3.6
-django-celery-beat==2.6.0
+django-celery-beat
 django-celery-results==2.5.1
