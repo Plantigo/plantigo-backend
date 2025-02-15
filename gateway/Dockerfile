@@ -21,11 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Kopiowanie kodu aplikacji
 COPY ./gateway /code/
 COPY ./shared /code/shared
-COPY ./scripts/generate_proto_files.sh /code/generate_proto_files.sh
 COPY ./gateway/entrypoint.sh /code/entrypoint.sh
-
-# Nadanie uprawnień wykonywania dla skryptów
-RUN chmod +x /code/generate_proto_files.sh /code/entrypoint.sh
 
 EXPOSE 8000
 
