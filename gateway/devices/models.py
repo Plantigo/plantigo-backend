@@ -100,7 +100,7 @@ class Device(BaseModel):
     )
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['created_at']
         indexes = [
             models.Index(fields=['mac_address']),
             models.Index(fields=['user', 'is_active'])
