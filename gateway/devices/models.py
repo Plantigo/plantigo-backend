@@ -19,7 +19,7 @@ User = get_user_model()
 class Telemetry(BaseModel):
     """
     Model representing telemetry data received from IoT devices.
-    
+
     Stores environmental measurements like temperature, humidity, pressure,
     and soil moisture along with the timestamp of measurement.
     """
@@ -77,7 +77,7 @@ class Telemetry(BaseModel):
 class Device(BaseModel):
     """
     Model representing an IoT device with telemetry capabilities.
-    
+
     The device is considered active if it has sent telemetry data within the last 5 minutes.
     """
     name = models.CharField(
@@ -133,7 +133,7 @@ class Device(BaseModel):
         telemetry = self.get_latest_telemetry()
         if not telemetry:
             return None
-            
+
         return {
             'temperature': telemetry.temperature,
             'humidity': telemetry.humidity,
@@ -166,7 +166,7 @@ class DeviceSensorLimits(BaseModel):
         related_name='sensor_limits',
         help_text="Device these limits are for"
     )
-    
+
     # Temperature limits (in Celsius)
     temp_min = models.FloatField(
         verbose_name="Minimum Temperature",
@@ -178,7 +178,7 @@ class DeviceSensorLimits(BaseModel):
         help_text="Maximum allowed temperature in Celsius",
         validators=[MinValueValidator(-40), MaxValueValidator(100)]
     )
-    
+
     # Humidity limits (in percentage)
     humidity_min = models.FloatField(
         verbose_name="Minimum Humidity",
@@ -190,7 +190,7 @@ class DeviceSensorLimits(BaseModel):
         help_text="Maximum allowed humidity in percentage",
         validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
-    
+
     # Pressure limits (in hPa)
     pressure_min = models.FloatField(
         verbose_name="Minimum Pressure",
@@ -202,7 +202,7 @@ class DeviceSensorLimits(BaseModel):
         help_text="Maximum allowed pressure in hPa",
         validators=[MinValueValidator(800), MaxValueValidator(1200)]
     )
-    
+
     # Soil moisture limits (raw sensor value)
     soil_moisture_min = models.IntegerField(
         verbose_name="Minimum Soil Moisture",
@@ -228,26 +228,26 @@ class DeviceSensorLimits(BaseModel):
         Returns list of violation messages if any limits are exceeded.
         """
         violations = []
-        
+
         if telemetry.temperature < self.temp_min:
             violations.append(f"Temperature {telemetry.temperature}°C is below minimum {self.temp_min}°C")
         elif telemetry.temperature > self.temp_max:
             violations.append(f"Temperature {telemetry.temperature}°C is above maximum {self.temp_max}°C")
-            
+
         if telemetry.humidity < self.humidity_min:
             violations.append(f"Humidity {telemetry.humidity}% is below minimum {self.humidity_min}%")
         elif telemetry.humidity > self.humidity_max:
             violations.append(f"Humidity {telemetry.humidity}% is above maximum {self.humidity_max}%")
-            
+
         if telemetry.pressure < self.pressure_min:
             violations.append(f"Pressure {telemetry.pressure}hPa is below minimum {self.pressure_min}hPa")
         elif telemetry.pressure > self.pressure_max:
             violations.append(f"Pressure {telemetry.pressure}hPa is above maximum {self.pressure_max}hPa")
-            
+
         if telemetry.soil_moisture < self.soil_moisture_min:
             violations.append(f"Soil moisture {telemetry.soil_moisture} is below minimum {self.soil_moisture_min}")
         elif telemetry.soil_moisture > self.soil_moisture_max:
             violations.append(f"Soil moisture {telemetry.soil_moisture} is above maximum {self.soil_moisture_max}")
-            
+
         return violations
 

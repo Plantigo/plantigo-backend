@@ -1,2 +1,3 @@
 /shared/
 generate_proto_files.sh
+.DS_Store
