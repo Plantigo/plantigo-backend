@@ -26,6 +26,7 @@ class Telemetry(BaseModel):
     device = models.ForeignKey(
         'Device',
         on_delete=models.CASCADE,
+        related_name='telemetry',
         help_text="Device that sent this telemetry data"
     )
     temperature = models.FloatField(
@@ -112,7 +113,7 @@ class Device(BaseModel):
 
     def update_active_status(self) -> bool:
         """Updates the is_active status based on recent telemetry data."""
-        has_recent_data = self.telemetry_set.filter(
+        has_recent_data = self.telemetry.filter(
             timestamp__gte=timezone.now() - timedelta(hours=24)
         ).exists()
         if self.is_active != has_recent_data:
@@ -122,11 +123,11 @@ class Device(BaseModel):
 
     def get_telemetry(self) -> QuerySet[Telemetry]:
         """Returns all telemetry data for this device, ordered by timestamp descending."""
-        return self.telemetry_set.order_by('-timestamp')
+        return self.telemetry.order_by('-timestamp')
 
     def get_latest_telemetry(self) -> Optional[Telemetry]:
         """Returns the most recent telemetry data for this device."""
-        return self.telemetry_set.order_by('-timestamp').first()
+        return self.telemetry.order_by('-timestamp').first()
 
     def get_latest_telemetry_data(self) -> Optional[Dict[str, Any]]:
         """Returns the most recent telemetry data as a dictionary."""

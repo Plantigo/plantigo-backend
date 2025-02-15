@@ -19,3 +19,4 @@ celery==5.3.6
 django-celery-beat
 django-celery-results==2.5.1
 pytz
+django-debug-toolbar

@@ -31,18 +31,25 @@ def format_mac_address(mac: str) -> str:
 def parse_timestamp(timestamp_str: str) -> datetime:
     """
     Parse timestamp string and convert to UTC timezone.
-    Handles both naive and timezone-aware timestamps.
+    Input timestamp is assumed to be in Europe/Warsaw timezone if no timezone info is provided.
     """
     # Parse the timestamp
     timestamp = datetime.fromisoformat(timestamp_str)
     
-    # If timestamp is naive (no timezone info), assume it's in local time (UTC+1)
+    # If timestamp is naive (no timezone info), assume it's in Europe/Warsaw
     if timestamp.tzinfo is None:
-        local_tz = pytz.timezone('Europe/Warsaw')  # UTC+1/UTC+2
-        timestamp = local_tz.localize(timestamp)
+        local_tz = pytz.timezone('Europe/Warsaw')
+        # Najpierw utwórz świadomy czasowo datetime w strefie Warsaw
+        local_dt = local_tz.localize(timestamp, is_dst=None)
+        # Następnie przekonwertuj do UTC
+        utc_dt = local_dt.astimezone(pytz.UTC)
+        logger.debug(f"Converted naive timestamp {timestamp_str} from Europe/Warsaw to UTC: {utc_dt}")
+        return utc_dt
     
-    # Convert to UTC for storage
-    return timestamp.astimezone(pytz.UTC)
+    # Jeśli timestamp już ma strefę czasową, po prostu przekonwertuj do UTC
+    utc_dt = timestamp.astimezone(pytz.UTC)
+    logger.debug(f"Converted aware timestamp {timestamp_str} to UTC: {utc_dt}")
+    return utc_dt
 
 
 def check_sensor_limits(telemetry: Telemetry) -> Tuple[List[str], str]:
