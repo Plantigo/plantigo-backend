@@ -3,17 +3,33 @@ set -e
 
 # Czekaj na dostępność bazy danych
 echo "Waiting for database..."
-while ! nc -z $DB_HOST $DB_PORT; do
-    sleep 0.1
+until pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER"
+do
+    echo "Database is unavailable - sleeping"
+    sleep 1
 done
 echo "Database started"
 
 # Czekaj na dostępność Redis
 echo "Waiting for Redis..."
-while ! nc -z $REDIS_HOST $REDIS_PORT; do
-    sleep 0.1
-done
-echo "Redis started"
+python << END
+import sys
+import redis
+import time
+import os
+
+redis_url = os.environ.get('REDIS_URL')
+
+while True:
+    try:
+        redis_client = redis.from_url(redis_url)
+        redis_client.ping()
+        break
+    except redis.ConnectionError:
+        print("Redis is unavailable - sleeping")
+        time.sleep(1)
+print("Redis started")
+END
 
 # Zastosuj migracje
 echo "Applying database migrations..."
