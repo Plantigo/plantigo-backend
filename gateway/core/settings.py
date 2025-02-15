@@ -88,9 +88,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'auth.apps.AuthConfig',
-    'proxy',
+    # 'proxy',
     'corsheaders',
-    'django_extensions'
+    'django_extensions',
+    'devices'
 ]
 
 AUTH_USER_MODEL = 'custom_auth.CustomUser'
@@ -110,6 +111,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
 }
 
@@ -196,3 +199,4 @@ SIMPLE_JWT = {
 
 DEVICES_SERVICE_URL = env('DEVICES_SERVICE_URL')
 TELEMETRY_SERVICE_URL = env('TELEMETRY_SERVICE_URL')
+
