@@ -84,14 +84,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_grpc_framework',
     'rest_framework',
     'rest_framework_simplejwt',
     'auth.apps.AuthConfig',
     # 'proxy',
     'corsheaders',
     'django_extensions',
-    'devices'
+    'devices',
+    'django_celery_results',
+    'django_celery_beat',
 ]
 
 AUTH_USER_MODEL = 'custom_auth.CustomUser'
