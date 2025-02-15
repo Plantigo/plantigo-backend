@@ -2,6 +2,7 @@ import json
 from typing import Optional, List
 from datetime import datetime
 import logging
+import pytz
 
 import redis
 from celery import shared_task
@@ -24,6 +25,23 @@ def format_mac_address(mac: str) -> str:
     mac = mac.replace(':', '').upper()
     # Insert colons every 2 characters
     return ':'.join(mac[i:i+2] for i in range(0, len(mac), 2))
+
+
+def parse_timestamp(timestamp_str: str) -> datetime:
+    """
+    Parse timestamp string and convert to UTC timezone.
+    Handles both naive and timezone-aware timestamps.
+    """
+    # Parse the timestamp
+    timestamp = datetime.fromisoformat(timestamp_str)
+    
+    # If timestamp is naive (no timezone info), assume it's in local time (UTC+1)
+    if timestamp.tzinfo is None:
+        local_tz = pytz.timezone('Europe/Warsaw')  # UTC+1/UTC+2
+        timestamp = local_tz.localize(timestamp)
+    
+    # Convert to UTC for storage
+    return timestamp.astimezone(pytz.UTC)
 
 
 @shared_task(
@@ -104,8 +122,14 @@ def process_telemetry_queue(self) -> Optional[str]:
                 errors_count += 1
                 continue
             
-            # Parse timestamp from data
-            timestamp = datetime.fromisoformat(telemetry_data['timestamp'])
+            # Parse and convert timestamp
+            try:
+                timestamp = parse_timestamp(telemetry_data['timestamp'])
+                logger.debug(f"Parsed timestamp {telemetry_data['timestamp']} to UTC: {timestamp}")
+            except (ValueError, pytz.exceptions.PytzError) as e:
+                logger.error(f"Error parsing timestamp: {e}, Data: {telemetry_data['timestamp']}")
+                errors_count += 1
+                continue
             
             # Sprawdź czy istnieje już telemetria dla tego urządzenia i timestampu
             if Telemetry.objects.filter(
