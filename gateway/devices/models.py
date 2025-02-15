@@ -113,7 +113,7 @@ class Device(BaseModel):
     def update_active_status(self) -> bool:
         """Updates the is_active status based on recent telemetry data."""
         has_recent_data = self.telemetry_set.filter(
-            timestamp__gte=timezone.now() - timedelta(minutes=5)
+            timestamp__gte=timezone.now() - timedelta(hours=24)
         ).exists()
         if self.is_active != has_recent_data:
             self.is_active = has_recent_data
