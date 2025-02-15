@@ -94,6 +94,7 @@ INSTALLED_APPS = [
     'notifications',
     'django_celery_results',
     'django_celery_beat',
+    'debug_toolbar',
 ]
 
 AUTH_USER_MODEL = 'custom_auth.CustomUser'
@@ -101,6 +102,7 @@ AUTH_USER_MODEL = 'custom_auth.CustomUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -212,3 +214,18 @@ CELERY_RESULT_EXTENDED = True
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_TASK_DEFAULT_QUEUE = 'erpapi'
+
+# Debug Toolbar Settings
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+if DEBUG:
+    import socket
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS += [ip[:-1] + '1' for ip in ips]
+    
+    # Konfiguracja Debug Toolbar dla Docker
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
+    }
