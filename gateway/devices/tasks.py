@@ -8,6 +8,7 @@ from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
 from django.db import transaction
+from django.db.models import Q
 
 from devices.models import Device, Telemetry
 
@@ -57,17 +58,14 @@ def process_telemetry_queue(self) -> Optional[str]:
         raise
     
     queue_key = "telemetry_queue"
-    batch_size = 100  # Process 100 records at a time
-    
-    # Get batch of data from Redis queue (non-blocking)
+    batch_size = 100
+
     raw_data_batch: List[bytes] = []
     data_indices: List[int] = []
     
-    # Najpierw sprawdź długość kolejki
     queue_length = redis_client.llen(queue_key)
     batch_size = min(batch_size, queue_length)
     
-    # Pobierz dane bez usuwania
     for index in range(batch_size):
         raw_data = redis_client.lindex(queue_key, index)
         if raw_data:
@@ -83,6 +81,7 @@ def process_telemetry_queue(self) -> Optional[str]:
         
     processed_count = 0
     errors_count = 0
+    duplicates_count = 0
     telemetry_objects = []
     devices_to_update = set()
     successful_indices = []  # Indeksy danych, które zostały pomyślnie przetworzone
@@ -108,6 +107,16 @@ def process_telemetry_queue(self) -> Optional[str]:
             # Parse timestamp from data
             timestamp = datetime.fromisoformat(telemetry_data['timestamp'])
             
+            # Sprawdź czy istnieje już telemetria dla tego urządzenia i timestampu
+            if Telemetry.objects.filter(
+                device=device,
+                timestamp=timestamp
+            ).exists():
+                logger.info(f"Duplicate telemetry found for device {mac_address} at {timestamp}")
+                duplicates_count += 1
+                successful_indices.append(index)  # Dodajemy do usunięcia z Redis
+                continue
+            
             # Create telemetry object with device
             telemetry = Telemetry(
                 device=device,
@@ -129,14 +138,14 @@ def process_telemetry_queue(self) -> Optional[str]:
             continue
     
     if not telemetry_objects:
-        logger.warning(f"No valid telemetry data to process. Errors: {errors_count}")
-        # Usuń błędne dane z kolejki
-        if errors_count > 0:
-            logger.info("Removing invalid data from queue")
-            for _ in range(len(data_indices)):
+        logger.warning(f"No valid telemetry data to process. Errors: {errors_count}, Duplicates: {duplicates_count}")
+        # Usuń błędne i zduplikowane dane z kolejki
+        if errors_count > 0 or duplicates_count > 0:
+            logger.info("Removing invalid and duplicate data from queue")
+            for _ in range(len(successful_indices)):
                 redis_client.lpop(queue_key)
         self.apply_async(countdown=1)
-        return f"No valid telemetry data to process. Errors: {errors_count}"
+        return f"No valid telemetry data to process. Errors: {errors_count}, Duplicates: {duplicates_count}"
     
     try:
         # Sort telemetry by timestamp to ensure chronological order
@@ -174,7 +183,7 @@ def process_telemetry_queue(self) -> Optional[str]:
         self.apply_async()
         
         result_message = (f"Processed {processed_count} telemetry records "
-                         f"({len(telemetry_objects)} saved, {errors_count} errors)")
+                         f"({len(telemetry_objects)} saved, {errors_count} errors, {duplicates_count} duplicates)")
         logger.info(result_message)
         return result_message
         
