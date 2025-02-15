@@ -1,5 +1,5 @@
 import json
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from datetime import datetime
 import logging
 import pytz
@@ -11,7 +11,8 @@ from django.utils import timezone
 from django.db import transaction
 from django.db.models import Q
 
-from devices.models import Device, Telemetry
+from devices.models import Device, Telemetry, DeviceSensorLimits
+from notifications.models import UserNotification
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,29 @@ def parse_timestamp(timestamp_str: str) -> datetime:
     return timestamp.astimezone(pytz.UTC)
 
 
+def check_sensor_limits(telemetry: Telemetry) -> Tuple[List[str], str]:
+    """
+    Check if telemetry values are within defined limits.
+    Returns tuple of (violation messages, severity level).
+    """
+    try:
+        limits = telemetry.device.sensor_limits
+    except DeviceSensorLimits.DoesNotExist:
+        return [], 'info'
+        
+    violations = limits.check_limits(telemetry)
+    
+    # Determine severity based on number of violations
+    if not violations:
+        severity = 'info'
+    elif len(violations) <= 2:
+        severity = 'warning'
+    else:
+        severity = 'critical'
+        
+    return violations, severity
+
+
 @shared_task(
     name="process_telemetry_queue",
     autoretry_for=(Exception,),
@@ -59,8 +83,9 @@ def process_telemetry_queue(self) -> Optional[str]:
     1. Gets batch of data from Redis queue
     2. Validates devices existence by MAC address
     3. Creates telemetry records in bulk
-    4. Updates devices active status
-    5. Schedules next execution
+    4. Checks sensor limits and creates notifications
+    5. Updates devices active status
+    6. Schedules next execution
     
     Returns:
         Optional[str]: Message about processing result
@@ -100,7 +125,9 @@ def process_telemetry_queue(self) -> Optional[str]:
     processed_count = 0
     errors_count = 0
     duplicates_count = 0
+    notifications_count = 0
     telemetry_objects = []
+    notification_objects = []
     devices_to_update = set()
     successful_indices = []  # Indeksy danych, które zostały pomyślnie przetworzone
     
@@ -156,6 +183,20 @@ def process_telemetry_queue(self) -> Optional[str]:
             successful_indices.append(index)
             logger.debug(f"Successfully processed telemetry for device: {mac_address}")
             
+            # Check sensor limits and create notifications if needed
+            violations, severity = check_sensor_limits(telemetry)
+            if violations:
+                notification = UserNotification(
+                    user=device.user,
+                    device=device,
+                    telemetry=telemetry,
+                    message="\n".join(violations),
+                    severity=severity
+                )
+                notification_objects.append(notification)
+                notifications_count += 1
+                logger.info(f"Created {severity} notification for device {mac_address}: {violations}")
+            
         except (json.JSONDecodeError, KeyError, ValueError) as e:
             logger.error(f"Error processing telemetry data: {e}, Data: {raw_data}")
             errors_count += 1
@@ -175,10 +216,14 @@ def process_telemetry_queue(self) -> Optional[str]:
         # Sort telemetry by timestamp to ensure chronological order
         telemetry_objects.sort(key=lambda x: x.timestamp)
         
-        # Bulk create all telemetry records in transaction
+        # Bulk create all telemetry records and notifications in transaction
         with transaction.atomic():
             logger.info(f"Starting bulk create of {len(telemetry_objects)} telemetry records")
             Telemetry.objects.bulk_create(telemetry_objects)
+            
+            if notification_objects:
+                logger.info(f"Creating {len(notification_objects)} notifications")
+                UserNotification.objects.bulk_create(notification_objects)
             
             # Update devices active status based on latest telemetry timestamp
             now = timezone.now()
@@ -207,7 +252,8 @@ def process_telemetry_queue(self) -> Optional[str]:
         self.apply_async()
         
         result_message = (f"Processed {processed_count} telemetry records "
-                         f"({len(telemetry_objects)} saved, {errors_count} errors, {duplicates_count} duplicates)")
+                         f"({len(telemetry_objects)} saved, {errors_count} errors, "
+                         f"{duplicates_count} duplicates, {notifications_count} notifications)")
         logger.info(result_message)
         return result_message
         
