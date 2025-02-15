@@ -18,7 +18,7 @@ User = get_user_model()
 class Telemetry(BaseModel):
     """
     Model representing telemetry data received from IoT devices.
-    
+
     Stores environmental measurements like temperature, humidity, pressure,
     and soil moisture along with the timestamp of measurement.
     """
@@ -76,7 +76,7 @@ class Telemetry(BaseModel):
 class Device(BaseModel):
     """
     Model representing an IoT device with telemetry capabilities.
-    
+
     The device is considered active if it has sent telemetry data within the last 5 minutes.
     """
     name = models.CharField(
@@ -132,7 +132,7 @@ class Device(BaseModel):
         telemetry = self.get_latest_telemetry()
         if not telemetry:
             return None
-            
+
         return {
             'temperature': telemetry.temperature,
             'humidity': telemetry.humidity,
@@ -152,4 +152,3 @@ class Device(BaseModel):
         return self.telemetry_set.filter(
             timestamp__gte=time_threshold
         ).order_by('-timestamp')
-

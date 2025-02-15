@@ -15,7 +15,7 @@ from devices.serializers import DeviceSerializer, TelemetrySerializer, DeviceDet
 class DeviceViewSet(viewsets.ModelViewSet):
     """
     ViewSet for managing IoT devices.
-    
+
     list:
         Get list of all user's devices with their latest telemetry data
     retrieve:
@@ -72,7 +72,7 @@ class TelemetryViewSet(mixins.CreateModelMixin,
                        viewsets.GenericViewSet):
     """
     ViewSet for managing telemetry data.
-    
+
     list:
         Get list of telemetry data (filtered by device if specified)
     retrieve:

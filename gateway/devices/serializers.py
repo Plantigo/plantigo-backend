@@ -68,4 +68,4 @@ class DeviceDetailSerializer(DeviceSerializer):
     def get_telemetry_history(self, obj):
         hours = self.context.get('hours', 24)
         telemetry = obj.get_telemetry_history(hours=hours)
-        return TelemetrySerializer(telemetry, many=True).data 
+        return TelemetrySerializer(telemetry, many=True).data
