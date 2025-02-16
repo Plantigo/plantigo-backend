@@ -37,6 +37,7 @@ class DeviceSerializer(serializers.ModelSerializer):
             'uuid',
             'name',
             'mac_address',
+            'plant_name',
             'user',
             'is_active',
             'latest_telemetry',

@@ -86,7 +86,7 @@ class HasUnreadNotificationsFilter(SimpleListFilter):
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
     list_display = [
-        'name', 'mac_address', 'user', 'is_active',
+        'name', 'mac_address', 'plant_name', 'user', 'is_active',
         'created_at'
     ]
     list_filter = ['is_active', 'user', HasUnreadNotificationsFilter, 'created_at']
@@ -164,7 +164,7 @@ class DeviceAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('uuid', 'name', 'mac_address', 'user', 'is_active')
+            'fields': ('uuid', 'name', 'mac_address', 'plant_name', 'user', 'is_active')
         }),
         ('Latest Telemetry', {
             'fields': ('latest_telemetry_summary',),
