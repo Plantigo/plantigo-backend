@@ -156,7 +156,7 @@ class Device(BaseModel):
     def get_telemetry_history(self, hours: int = 24) -> QuerySet[Telemetry]:
         """Returns telemetry history for specified number of hours."""
         time_threshold = timezone.now() - timedelta(hours=hours)
-        return self.telemetry_set.filter(
+        return self.telemetry.filter(
             timestamp__gte=time_threshold
         ).order_by('-timestamp')
 
