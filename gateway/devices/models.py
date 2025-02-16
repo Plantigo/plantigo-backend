@@ -98,7 +98,7 @@ class Device(BaseModel):
     )
     is_active = models.BooleanField(
         default=False,
-        help_text="Indicates if device is active (has sent data in last 5 minutes)"
+        help_text="Indicates if device is active (has sent data in last 4 hours)"
     )
 
     class Meta:
@@ -114,7 +114,7 @@ class Device(BaseModel):
     def update_active_status(self) -> bool:
         """Updates the is_active status based on recent telemetry data."""
         has_recent_data = self.telemetry.filter(
-            timestamp__gte=timezone.now() - timedelta(hours=24)
+            timestamp__gte=timezone.now() - timedelta(hours=4)
         ).exists()
         if self.is_active != has_recent_data:
             self.is_active = has_recent_data
