@@ -41,7 +41,6 @@ class UserViewSet(viewsets.ModelViewSet):
         detail=False,
         methods=['get'],
         permission_classes=[AllowAny],
-        authentication_classes=[],
         url_path='google-userinfo',
     )
     def google_userinfo(self, request):
