@@ -22,7 +22,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Kopiowanie kodu aplikacji
 COPY ./gateway /code/
-COPY ./shared /code/shared
 COPY ./gateway/entrypoint.sh /code/entrypoint.sh
 
 # Popraw line endings i ustaw uprawnienia
