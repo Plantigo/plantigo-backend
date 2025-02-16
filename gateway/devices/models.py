@@ -100,6 +100,12 @@ class Device(BaseModel):
         default=False,
         help_text="Indicates if device is active (has sent data in last 4 hours)"
     )
+    plant_name = models.CharField(
+        max_length=255,
+        help_text="Name of the plant",
+        null=True,
+        blank=True
+    )
 
     class Meta:
         ordering = ['-created_at']
