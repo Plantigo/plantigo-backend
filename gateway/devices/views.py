@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -9,8 +8,6 @@ from datetime import timedelta
 from devices.models import Device, Telemetry
 from devices.serializers import DeviceSerializer, TelemetrySerializer, DeviceDetailSerializer
 
-
-# Create your views here.
 
 class DeviceViewSet(viewsets.ModelViewSet):
     """
