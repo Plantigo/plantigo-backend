@@ -95,7 +95,7 @@ class DeviceAdmin(admin.ModelAdmin):
     list_select_related = ['user']
 
     readonly_fields = [
-        'uuid', 'is_active', 'created_at', 'updated_at',
+        'uuid',  'created_at', 'updated_at',
         'notifications_summary', 'latest_telemetry_summary'
     ]
 

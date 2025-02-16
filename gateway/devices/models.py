@@ -116,9 +116,8 @@ class Device(BaseModel):
         has_recent_data = self.telemetry.filter(
             timestamp__gte=timezone.now() - timedelta(hours=4)
         ).exists()
-        if self.is_active != has_recent_data:
-            self.is_active = has_recent_data
-            self.save(update_fields=['is_active'])
+        self.is_active = has_recent_data
+        self.save(update_fields=['is_active'])
         return self.is_active
 
     def get_telemetry(self) -> QuerySet[Telemetry]:
