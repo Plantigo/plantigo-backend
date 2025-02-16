@@ -234,17 +234,17 @@ def process_telemetry_queue(self) -> Optional[str]:
             
             # Update devices active status based on latest telemetry timestamp
             now = timezone.now()
-            five_minutes_ago = now - timezone.timedelta(minutes=5)
+            four_hours_ago = now - timezone.timedelta(hours=4)
             
             # Update active status for devices with recent data
             active_devices = Device.objects.filter(
                 pk__in=devices_to_update,
-                telemetry__timestamp__gte=five_minutes_ago
+                telemetry__timestamp__gte=four_hours_ago
             ).update(is_active=True)
             
             inactive_devices = Device.objects.filter(
                 pk__in=devices_to_update,
-                telemetry__timestamp__lt=five_minutes_ago
+                telemetry__timestamp__lt=four_hours_ago
             ).update(is_active=False)
             
             logger.info(f"Updated device statuses: {active_devices} active, {inactive_devices} inactive")
