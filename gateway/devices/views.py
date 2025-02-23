@@ -77,7 +77,7 @@ class TelemetryViewSet(mixins.CreateModelMixin,
     create:
         Add new telemetry data
     """
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = TelemetrySerializer
 
     def get_queryset(self):
