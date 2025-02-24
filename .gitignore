@@ -236,3 +236,5 @@ passwd
 
 gateway/shared/
 gateway/generate_proto_files.sh
+
+.DS_Store
