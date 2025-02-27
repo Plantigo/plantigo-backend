@@ -21,6 +21,9 @@ class BaseModel(models.Model):
         self.is_deleted = False
         self.save()
 
+    def hard_delete(self):
+        super().delete()
+
     class Meta:
         abstract = True
    
