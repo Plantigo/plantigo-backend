@@ -24,7 +24,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
     partial_update:
         Update specific device fields (PATCH)
     delete:
-        Remove device
+        Remove device (hard delete)
     """
     permission_classes = [IsAuthenticated]
     serializer_class = DeviceSerializer
@@ -49,6 +49,12 @@ class DeviceViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        """Perform hard delete of the device."""
+        instance = self.get_object()
+        instance.hard_delete()
+        return Response(status=204)
 
     @action(detail=True, methods=['get'])
     def history(self, request, pk=None):
