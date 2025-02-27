@@ -87,8 +87,8 @@ def process_telemetry_queue(self) -> Optional[str]:
     Process telemetry data from Redis queue.
     
     The task:
-    1. Gets batch of data from Redis queue
-    2. Validates devices existence by MAC address
+    1. Gets all active devices
+    2. For each device, retrieves telemetry data from Redis using MAC address as key
     3. Creates telemetry records in bulk
     4. Checks sensor limits and creates notifications
     5. Updates devices active status
@@ -107,28 +107,15 @@ def process_telemetry_queue(self) -> Optional[str]:
         logger.error(f"Failed to connect to Redis: {e}")
         raise
     
-    queue_key = "telemetry_queue"
-    batch_size = 100
-
-    raw_data_batch: List[bytes] = []
-    data_indices: List[int] = []
+    # Get all devices from database
+    devices = Device.objects.all()
+    logger.info(f"Found {devices.count()} devices to process")
     
-    queue_length = redis_client.llen(queue_key)
-    batch_size = min(batch_size, queue_length)
-    
-    for index in range(batch_size):
-        raw_data = redis_client.lindex(queue_key, index)
-        if raw_data:
-            raw_data_batch.append(raw_data)
-            data_indices.append(index)
-    
-    logger.info(f"Retrieved {len(raw_data_batch)} records from Redis queue (total queue size: {queue_length})")
-    
-    if not raw_data_batch:
-        logger.debug("No data in queue, scheduling next execution")
+    if not devices.exists():
+        logger.debug("No devices found, scheduling next execution")
         self.apply_async(countdown=1)
         return None
-        
+    
     processed_count = 0
     errors_count = 0
     duplicates_count = 0
@@ -136,86 +123,89 @@ def process_telemetry_queue(self) -> Optional[str]:
     telemetry_objects = []
     notification_objects = []
     devices_to_update = set()
-    successful_indices = []  # Indeksy danych, które zostały pomyślnie przetworzone
+    processed_keys = []  # Klucze Redis, które zostały pomyślnie przetworzone
     
-    # Process all records in batch
-    for index, raw_data in zip(data_indices, raw_data_batch):
-        try:
-            # Parse telemetry data
-            telemetry_data = json.loads(raw_data)
-            
-            # Format MAC address to standard format
-            mac_address = format_mac_address(telemetry_data['mac_address'])
-            logger.debug(f"Processing telemetry for device: {mac_address}")
-            
-            # Find device by MAC address
-            try:
-                device = Device.objects.get(mac_address=mac_address)
-            except Device.DoesNotExist:
-                logger.warning(f"Device not found for MAC address: {mac_address}")
-                errors_count += 1
-                continue
-            
-            # Parse and convert timestamp
-            try:
-                timestamp = parse_timestamp(telemetry_data['timestamp'])
-                logger.debug(f"Parsed timestamp {telemetry_data['timestamp']} to UTC: {timestamp}")
-            except (ValueError, pytz.exceptions.PytzError) as e:
-                logger.error(f"Error parsing timestamp: {e}, Data: {telemetry_data['timestamp']}")
-                errors_count += 1
-                continue
-            
-            # Sprawdź czy istnieje już telemetria dla tego urządzenia i timestampu
-            if Telemetry.objects.filter(
-                device=device,
-                timestamp=timestamp
-            ).exists():
-                logger.info(f"Duplicate telemetry found for device {mac_address} at {timestamp}")
-                duplicates_count += 1
-                successful_indices.append(index)  # Dodajemy do usunięcia z Redis
-                continue
-            
-            # Create telemetry object with device
-            telemetry = Telemetry(
-                device=device,
-                temperature=telemetry_data['temperature'],
-                humidity=telemetry_data['humidity'],
-                pressure=telemetry_data['pressure'],
-                soil_moisture=telemetry_data['soil_moisture'],
-                timestamp=timestamp
-            )
-            telemetry_objects.append(telemetry)
-            devices_to_update.add(device.pk)
-            processed_count += 1
-            successful_indices.append(index)
-            logger.debug(f"Successfully processed telemetry for device: {mac_address}")
-            
-            # Check sensor limits and create notifications if needed
-            violations, severity = check_sensor_limits(telemetry)
-            if violations:
-                notification = UserNotification(
-                    user=device.user,
-                    device=device,
-                    telemetry=telemetry,
-                    message="\n".join(violations),
-                    severity=severity
-                )
-                notification_objects.append(notification)
-                notifications_count += 1
-                logger.info(f"Created {severity} notification for device {mac_address}: {violations}")
-            
-        except (json.JSONDecodeError, KeyError, ValueError) as e:
-            logger.error(f"Error processing telemetry data: {e}, Data: {raw_data}")
-            errors_count += 1
+    # Process all devices
+    for device in devices:
+        # Get MAC address in raw format (without colons)
+        raw_mac = device.mac_address.replace(':', '').lower()
+        redis_key = str(raw_mac)
+        
+        # Get all telemetry data for this device
+        queue_length = redis_client.llen(redis_key)
+        if queue_length == 0:
+            logger.debug(f"No telemetry data for device: {device.mac_address}")
             continue
+            
+        logger.info(f"Found {queue_length} telemetry records for device: {device.mac_address}")
+        
+        # Process all telemetry data for this device
+        for index in range(queue_length):
+            try:
+                # Get telemetry data from Redis
+                raw_data = redis_client.lindex(redis_key, index)
+                if not raw_data:
+                    continue
+                    
+                # Parse telemetry data
+                telemetry_data = json.loads(raw_data)
+                logger.debug(f"Processing telemetry for device: {device.mac_address}")
+                
+                # Parse and convert timestamp
+                try:
+                    timestamp = parse_timestamp(telemetry_data['timestamp'])
+                    logger.debug(f"Parsed timestamp {telemetry_data['timestamp']} to UTC: {timestamp}")
+                except (ValueError, pytz.exceptions.PytzError) as e:
+                    logger.error(f"Error parsing timestamp: {e}, Data: {telemetry_data['timestamp']}")
+                    errors_count += 1
+                    continue
+                
+                # Sprawdź czy istnieje już telemetria dla tego urządzenia i timestampu
+                if Telemetry.objects.filter(
+                    device=device,
+                    timestamp=timestamp
+                ).exists():
+                    logger.info(f"Duplicate telemetry found for device {device.mac_address} at {timestamp}")
+                    duplicates_count += 1
+                    processed_keys.append((redis_key, index))  # Dodajemy do usunięcia z Redis
+                    continue
+                
+                # Create telemetry object with device
+                telemetry = Telemetry(
+                    device=device,
+                    temperature=telemetry_data['temperature'],
+                    humidity=telemetry_data['humidity'],
+                    pressure=telemetry_data['pressure'],
+                    soil_moisture=telemetry_data['soil_moisture'],
+                    timestamp=timestamp
+                )
+                telemetry_objects.append(telemetry)
+                devices_to_update.add(device.pk)
+                processed_count += 1
+                processed_keys.append((redis_key, index))
+                logger.debug(f"Successfully processed telemetry for device: {device.mac_address}")
+                
+                # Check sensor limits and create notifications if needed
+                violations, severity = check_sensor_limits(telemetry)
+                if violations:
+                    notification = UserNotification(
+                        user=device.user,
+                        device=device,
+                        telemetry=telemetry,
+                        message="\n".join(violations),
+                        severity=severity
+                    )
+                    notification_objects.append(notification)
+                    notifications_count += 1
+                    logger.info(f"Created {severity} notification for device {device.mac_address}: {violations}")
+                
+            except (json.JSONDecodeError, KeyError, ValueError) as e:
+                logger.error(f"Error processing telemetry data: {e}, Data: {raw_data}")
+                errors_count += 1
+                continue
     
     if not telemetry_objects:
         logger.warning(f"No valid telemetry data to process. Errors: {errors_count}, Duplicates: {duplicates_count}")
-        # Usuń błędne i zduplikowane dane z kolejki
-        if errors_count > 0 or duplicates_count > 0:
-            logger.info("Removing invalid and duplicate data from queue")
-            for _ in range(len(successful_indices)):
-                redis_client.lpop(queue_key)
         self.apply_async(countdown=1)
         return f"No valid telemetry data to process. Errors: {errors_count}, Duplicates: {duplicates_count}"
     
@@ -250,9 +240,11 @@ def process_telemetry_queue(self) -> Optional[str]:
             logger.info(f"Updated device statuses: {active_devices} active, {inactive_devices} inactive")
             
             # Po pomyślnym zapisie do bazy, usuń przetworzone dane z kolejki
-            logger.info(f"Removing {len(successful_indices)} processed records from Redis queue")
-            for _ in range(len(successful_indices)):
-                redis_client.lpop(queue_key)
+            logger.info(f"Removing {len(processed_keys)} processed records from Redis")
+            for redis_key, index in processed_keys:
+                # Usuwamy dane z kolejki Redis
+                # Ponieważ usuwamy od początku, indeksy się zmieniają, więc zawsze usuwamy pierwszy element
+                redis_client.lpop(redis_key)
         
         # Schedule next execution immediately
         logger.info("Scheduling next execution")

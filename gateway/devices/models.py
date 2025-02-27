@@ -23,6 +23,7 @@ class Telemetry(BaseModel):
     Stores environmental measurements like temperature, humidity, pressure,
     and soil moisture along with the timestamp of measurement.
     """
+
     device = models.ForeignKey(
         'Device',
         on_delete=models.CASCADE,
