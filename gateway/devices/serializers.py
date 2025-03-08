@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Device, Telemetry
+from .models import Device, Telemetry, DashboardLayout
 
 
 class TelemetrySerializer(serializers.ModelSerializer):
@@ -70,3 +70,16 @@ class DeviceDetailSerializer(DeviceSerializer):
         hours = self.context.get('hours', 24)
         telemetry = obj.get_telemetry_history(hours=hours)
         return TelemetrySerializer(telemetry, many=True).data
+
+
+class DashboardLayoutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DashboardLayout
+        fields = [
+            'uuid',
+            'device',
+            'layout',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at']

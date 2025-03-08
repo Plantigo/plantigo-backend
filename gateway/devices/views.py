@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from django.utils import timezone
 from datetime import timedelta
 
-from devices.models import Device, Telemetry
-from devices.serializers import DeviceSerializer, TelemetrySerializer, DeviceDetailSerializer
+from devices.models import Device, Telemetry, DashboardLayout
+from devices.serializers import DeviceSerializer, TelemetrySerializer, DeviceDetailSerializer, DashboardLayoutSerializer
 
 
 class DeviceViewSet(viewsets.ModelViewSet):
@@ -67,6 +67,35 @@ class DeviceViewSet(viewsets.ModelViewSet):
             context={'hours': hours}
         )
         return Response(serializer.data)
+
+    @action(detail=True, methods=['get', 'put'])
+    def dashboard_layout(self, request, *args, **kwargs):
+        """
+        Get or update the dashboard layout for a device.
+        
+        GET: Retrieve the current dashboard layout
+        PUT: Update the dashboard layout
+        """
+        device = self.get_object()
+        
+        # GET request - return current layout
+        if request.method == 'GET':
+            layout, created = DashboardLayout.objects.get_or_create(
+                device=device,
+                defaults={'layout': DashboardLayout().get_default_layout()}
+            )
+            serializer = DashboardLayoutSerializer(layout)
+            return Response(serializer.data)
+        
+        # PUT request - update layout
+        elif request.method == 'PUT':
+            layout, created = DashboardLayout.objects.get_or_create(
+                device=device
+            )
+            serializer = DashboardLayoutSerializer(layout, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
 
 
 class TelemetryViewSet(mixins.CreateModelMixin,

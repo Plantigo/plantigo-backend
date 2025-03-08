@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.db.models import Count, Avg, Min, Max, Q, OuterRef, Subquery
 from django.contrib.admin import SimpleListFilter
 
-from .models import Device, Telemetry, DeviceSensorLimits
+from .models import Device, Telemetry, DeviceSensorLimits, DashboardLayout
 from django.utils.timezone import localtime
 
 
@@ -390,6 +390,85 @@ class DeviceSensorLimitsAdmin(admin.ModelAdmin):
         }),
         ('Current Status', {
             'fields': ('current_telemetry',),
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(DashboardLayout)
+class DashboardLayoutAdmin(admin.ModelAdmin):
+    list_display = [
+        'uuid',
+        'device_link',
+        'created_at',
+        'updated_at',
+    ]
+    list_filter = [
+        'device__user',
+        'created_at',
+    ]
+    search_fields = [
+        'device__name',
+        'device__mac_address',
+        'device__user__username',
+    ]
+    readonly_fields = [
+        'uuid',
+        'created_at',
+        'updated_at',
+        'layout_preview',
+    ]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related(
+            'device',
+            'device__user'
+        )
+
+    def device_link(self, obj):
+        url = reverse('admin:devices_device_change', args=[obj.device.pk])
+        return format_html('<a href="{}">{}</a>', url, obj.device.name)
+
+    device_link.short_description = 'Device'
+    device_link.admin_order_field = 'device__name'
+
+    def layout_preview(self, obj):
+        layout = obj.get_layout()
+        if not layout:
+            return "No layout configured"
+
+        preview_html = ['<div style="padding: 10px; background-color: #f8f9fa; border-radius: 4px;">']
+        preview_html.append('<h4 style="margin-top: 0;">Dashboard Layout</h4>')
+        
+        for i, item in enumerate(layout, 1):
+            widget_type = item.get('type', 'Unknown')
+            widget_title = item.get('title', f'Widget {i}')
+            widget_data = item.get('data_source', 'No data source')
+            
+            preview_html.append(
+                f'<div style="margin-bottom: 10px; padding: 8px; background-color: white; border-radius: 4px;">'
+                f'<div style="margin-bottom: 5px;">'
+                f'<strong>{i}. {widget_title}</strong>'
+                f'<span style="float: right; background-color: #17a2b8; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">{widget_type}</span>'
+                f'</div>'
+                f'<div>Data source: {widget_data}</div>'
+                f'</div>'
+            )
+        
+        preview_html.append('</div>')
+        return format_html(''.join(preview_html))
+
+    layout_preview.short_description = 'Layout Preview'
+
+    fieldsets = (
+        (None, {
+            'fields': ('uuid', 'device')
+        }),
+        ('Layout Configuration', {
+            'fields': ('layout', 'layout_preview'),
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),

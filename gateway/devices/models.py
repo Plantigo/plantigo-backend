@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import timedelta
-from typing import Dict, Optional, Any
+from typing import Dict, Optional, Any, List
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -257,4 +257,41 @@ class DeviceSensorLimits(BaseModel):
             violations.append(f"Soil moisture {telemetry.soil_moisture} is above maximum {self.soil_moisture_max}")
 
         return violations
+
+
+class DashboardLayout(BaseModel):
+    """
+    Model representing a user's dashboard layout configuration for a specific device.
+    
+    Stores the order and types of diagrams displayed on the device dashboard.
+    """
+    device = models.OneToOneField(
+        'Device',
+        on_delete=models.CASCADE,
+        related_name='dashboard_layout',
+        help_text="Device this dashboard layout belongs to"
+    )
+    layout = models.JSONField(
+        default=list,
+        help_text="JSON representation of the dashboard layout"
+    )
+
+    def __str__(self) -> str:
+        return f"Dashboard layout for {self.device.name}"
+    
+    def get_layout(self) -> List[Dict[str, Any]]:
+        """Returns the dashboard layout as a list of diagram configurations."""
+        return self.layout
+    
+    def set_layout(self, layout: List[Dict[str, Any]]) -> None:
+        """Updates the dashboard layout."""
+        self.layout = layout
+        self.save()
+    
+    def get_default_layout(self) -> List[Dict[str, Any]]:
+        """Returns the default dashboard layout if none exists."""
+        return [
+            {"id": "temperature-diagram", "type": "temperature"},
+            {"id": "moisture-diagram", "type": "moisture"}
+        ]
 
